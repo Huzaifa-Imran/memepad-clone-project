@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+
+.project-banner-container {
+  background: linear-gradient(180deg, #0097ff, #007fff);
+  padding: 30px 70px;
+  color: #ffffff;
+}
+
+.banner-container-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.banner-img img {
+  max-width: 220px;
+}
+
+.projects-launchTitle {
+  padding: 38px 0 10px 48px;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 0.9;
+  color: #22282a;
+}
+
+.memepad-card {
+  border-radius: 12px !important;
+  overflow: hidden;
+  /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+  cursor: pointer;
+  box-shadow: 4.5px 7.8px 45px 0 rgb(34 34 34 / 5%);
+  transition: all 1s cubic-bezier(0.17, 0.67, 0.23, 0.99);
+}
+
+.memepad-card:hover {
+  -webkit-transform: scale(1.02);
+  transform: scale(1.02);
+  box-shadow: 4.5px 7.8px 45px rgb(0 0 0 / 20%);
+}
+
+.memepad-card-1st-div img {
+  width: 100%;
+  height: 240px;
+}
+
+.memepad-card-2nd-div {
+  display: flex;
+  flex-direction: column;
+  padding: 0.8rem;
+}
+
+.second-third-div-background {
+  background-color: #ffffff;
+}
+
+.img-txt {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.only-text div:first-child {
+  color: #22282a;
+  font-weight: 700;
+  line-height: 15px;
+}
+
+.only-text span {
+  line-height: 0%;
+  font-size: 13px;
+  color: #838792;
+}
+
+.label {
+  font-size: 13px;
+  color: #22282a;
+}
+
+.progress-num {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.memepad-card-3rd-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.8rem;
+}
+.stats-label {
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  color: #838792;
+}
+
+.stats-num{
+  font-family: 'Rubik', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #22282a;
+}
+
+.progress {
+  height: 0.5rem !important;
+  margin: 0.2rem 0;
+}
+
+.small-2nd-div-img {
+  position: relative;
+  top: 1.2rem;
+  bottom: 0;
+  right: 1.1rem;
+}
