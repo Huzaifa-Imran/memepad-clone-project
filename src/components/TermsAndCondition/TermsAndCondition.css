@@ -1,0 +1,62 @@
+.term-layout {
+  min-height: calc(100vh - 99px);
+  padding-bottom: 40px;
+}
+
+@media only screen and (min-width: 1024px) and (max-width: 1365px) {
+  .term-content {
+    padding: 40px 20px;
+    width: 100%;
+  }
+}
+
+.term-content {
+  max-width: 1280px;
+  padding: 50px 33px;
+  margin: auto;
+  font-family: Rubik, sans-serif;   
+}
+
+.title-page{
+    font-size: 60px;
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -1.5px;
+    color: rgb(34, 40, 42);
+    margin-bottom: 40px;
+}
+
+.description{
+    font-size: 18px;
+    line-height: 1.67;
+    letter-spacing: normal;
+    color: rgb(34, 40, 42);
+    margin-bottom: 50px;
+}
+
+.terms-section{
+    margin-bottom: 25px;
+}
+
+.hyACbC .terms-section .title-bold {
+    font-size: 24px;
+    font-weight: 600;
+    color: rgb(34, 40, 42);
+}
+
+.detail-normal-ul {
+    font-size: 15px;
+    line-height: 2;
+    color: rgb(85, 93, 96);
+    margin: 0px;
+    padding: 0px 0px 0px 20px;
+}
+
+::marker {
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+    text-transform: none;
+    text-indent: 0px !important;
+    text-align: start !important;
+    text-align-last: start !important;
+}

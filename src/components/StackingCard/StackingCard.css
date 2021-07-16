@@ -1,0 +1,381 @@
+/* .staking-card-main{
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(300px,350px));
+  grid-gap: 18px;
+} */
+
+.staking-card {
+  position: relative;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background-color: #ffffff;
+  box-shadow: 5.5px 9.5px 45px 0 rgb(34 34 34 / 3%);
+  transition: all 1s cubic-bezier(0.17, 0.67, 0.23, 0.99);
+}
+
+@media (max-width: 992px) {
+  .staking-card {
+    margin-bottom: 30px;
+  }
+}
+
+
+.irmCui {
+  z-index: 1;
+  background-color: rgb(189, 194, 196);
+  color: white;
+  margin: 0px;
+  padding: 6px 0px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  text-align: center;
+  transform: translateX(30%) translateY(0%) rotate(45deg);
+  transform-origin: left top;
+  width: 96px;
+}
+
+.irmCui > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 96px;
+}
+
+.irmCui::before {
+  background-color: rgb(189, 194, 196);
+  content: "";
+  height: 100%;
+  margin: 0px -1px;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  right: 100%;
+  box-sizing: border-box;
+}
+
+.irmCui::after {
+  background-color: rgb(189, 194, 196);
+  content: "";
+  height: 100%;
+  margin: 0px -1px;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  left: 100%;
+  box-sizing: border-box;
+}
+
+
+.staking-card-first-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 29px 23px 25px 22px;
+  border-bottom: 1px solid #e8eaeb;
+}
+
+.staking-text-1 div:first-child {
+  display: block;
+  font-family: Rubik, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 20px;
+  letter-spacing: normal;
+  text-align: left;
+  color: #22282a;
+}
+
+.staking-text-1 div:last-child {
+  font-family: Rubik, sans-serif;
+  font-stretch: normal;
+  line-height: 1;
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: #838792;
+  margin-top: 7px;
+}
+
+.staking-img-1 {
+  position: relative;
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #ebebeb no-repeat 50% / cover;
+}
+
+.staking-img-1 > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.staking-img-small-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  background: #838792 no-repeat 50% / cover;
+  border-radius: 50%;
+  border: none;
+}
+
+.staking-img-small-icon > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.staking-text-2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 29px 23px 25px 22px;
+  width: 100%;
+}
+
+.staking-text-2 div:first-child {
+  display: block;
+  font-family: Rubik, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 20px;
+  letter-spacing: normal;
+  text-align: left;
+  color: #22282a;
+}
+
+.staking-text-2 div:last-child {
+  min-height: 20px;
+  display: block;
+  background-color: rgb(233, 234, 235);
+  border-radius: 4px;
+  width: 79px;
+  height: 25px;
+
+  animation: 2s ease-out 0s infinite normal none running anim;
+  transform: translate3d(0px, 0px, 0px);
+}
+
+@keyframes anim {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.staking-text-3 {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 23px 0px 22px;
+  width: 100%;
+}
+
+.staking-text-3 div {
+  color: rgb(0, 152, 255);
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-family: Rubik, sans-serif;
+}
+
+.staking-card-fourth-div {
+  padding: 5px 23px 0px 22px;
+  width: 100%;
+}
+
+.staking-btn button {
+  width: 100%;
+  background-image: linear-gradient(0deg, #0078ff, #4ca4f3);
+  color: #fff;
+  transition: opacity 0.15s ease-in;
+  border: none;
+  padding: 0 33px;
+  height: 47px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 11.5px;
+  justify-content: center;
+  transition: opacity 0.15s ease-in;
+  font-family: Rubik, sans-serif;
+}
+
+.staking-btn button:hover {
+  opacity: 0.9;
+  color: #fff;
+}
+
+.staking-card-fifth-div {
+  padding: 15px 23px 15px 22px;
+  width: 100%;
+}
+
+.staking-btn-text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.staking-btn-text button:first-child {
+  color: #22282a;
+  height: 28px;
+  border: 1px solid #e8eaeb;
+  border-radius: 7.5px;
+  padding: 15px !important;
+  background: none;
+  transition: opacity 0.15s ease-in;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: Rubik, sans-serif;
+  letter-spacing: 0.55px;
+}
+
+.staking-btn-text button:first-child:hover {
+  opacity: 0.75;
+}
+
+.staking-btn-text button:first-child span {
+  color: #0078ff;
+  margin-right: 5px;
+}
+
+.staking-btn-text button:last-child {
+  font-size: 13px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.54;
+  letter-spacing: normal;
+  text-align: right;
+  color: #0098ff;
+  cursor: pointer;
+  transition: opacity 0.15s ease-in;
+  font-family: Rubik, sans-serif;
+  appearance: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.staking-btn-text button:last-child:hover {
+  opacity: 0.75;
+}
+
+.staking-btn-text button:last-child span {
+  color: #0078ff;
+  font-size: 17px;
+}
+
+.staking-card-sixth-div {
+  padding: 15px 23px 0px 22px;
+  width: 100%;
+}
+
+.staking-text-4 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.staking-text-4 div:first-child{
+  color: rgb(0, 0, 0);
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Rubik, sans-serif;
+}
+
+.staking-text-4 div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.staking-text-4 div:last-child {
+  min-height: 20px;
+  display: block;
+  background-color: rgb(233, 234, 235);
+  border-radius: 4px;
+  width: 79px;
+  height: 25px;
+  animation: 2s ease-out 0s infinite normal none running anim2;
+  transform: translate3d(0px, 0px, 0px);
+}
+
+@keyframes anim2 {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.staking-card-seventh-div {
+  padding: 0px 23px 20px 22px;
+  width: 100%;
+}
+
+.staking-text-5 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* .staking-text-5 div:first-child {
+  display: flex;
+  flex-direction: row;
+  align-items: center !important;
+  justify-content: center;
+} */
+
+.staking-text-5 div:first-child a {
+  display: flex;
+  flex-direction: row;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content;
+  color: rgb(0, 152, 255);
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Rubik, sans-serif;
+  margin-top: 3px;
+}
+
+.staking-text-5 div:first-child a span:last-child {
+  color: rgb(31, 199, 212);
+  flex-shrink: 0;
+  margin-left: 4px;
+}

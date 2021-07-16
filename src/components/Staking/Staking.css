@@ -1,0 +1,108 @@
+.staking-wrapper {
+  min-height: calc(100vh - 99px);
+  padding-bottom: 40px;
+}
+
+.banner-container-content {
+  min-height: 140px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* .staking-cards-container{
+  height: 70vh;
+} */
+
+.switch-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.switch-btn nav ul {
+  margin: 0;
+  padding: 2px;
+  display: -webkit-flex;
+  display: flex;
+  list-style: none;
+  border-radius: 19px;
+  background: #f1f4fb;
+}
+
+.switch-btn nav ul li {
+  width: auto;
+  list-style-type: none;
+}
+
+.switch-btn-toggle {
+  opacity: 1;
+  background: #fff;
+  color: #007eff;
+  box-shadow: 0 6px 12px rgb(134 140 150 / 20%);
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  font-family: Rubik, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: left;
+  text-transform: capitalize;
+  height: 35px;
+  min-width: 100px;
+  padding: 0 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 17px !important;
+  transition: all 0.15s ease-in;
+}
+
+.switch-btn-toggle-disable {
+  background: transparent;
+  color: #80869e;
+  opacity: 0.5;
+
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  font-family: Rubik, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: left;
+  text-transform: capitalize;
+  height: 35px;
+  min-width: 100px;
+  padding: 0 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 17px !important;
+  transition: all 0.15s ease-in;
+}
+
+.switch-btn nav ul li button::selection {
+  background: transparent;
+  color: #80869e;
+  opacity: 0.5;
+}
+
+.switch-btn nav ul li button span {
+  font-weight: 700;
+}

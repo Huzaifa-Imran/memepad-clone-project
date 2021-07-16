@@ -2,9 +2,9 @@
   overflow-x: hidden;
 }
 
-body {
+/* body {
   background-color: rgb(33, 30, 46) !important;
-}
+} */
 
 .sidebar-heading {
   position: relative !important;
@@ -40,7 +40,7 @@ body {
 }
 
 #sidebar-wrapper {
-  min-height: 100vh;
+  max-height: 100%;
   margin-left: -15rem;
   -webkit-transition: margin 0.25s ease-out;
   -moz-transition: margin 0.25s ease-out;
@@ -60,7 +60,7 @@ body {
 #page-content-wrapper {
   min-width: 100vw;
   background-color: #fafbfb !important;
-  height: 100vh;
+  height: 100%;
   /* color: #ffffff; */
 }
 
@@ -199,7 +199,7 @@ body {
   }
 
   #page-content-wrapper {
-    height: 10% !important;
+    height: 100% !important;
   }
 
   #sidebar-wrapper {

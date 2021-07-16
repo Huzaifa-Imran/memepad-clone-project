@@ -9,7 +9,7 @@ export const SidebarData = [
     icon: <BiRocket />,
   },
   {
-    title: 'Stacking',
+    title: 'Staking',
     path: '/staking',
     icon: <RiIcons.RiCoinFill />,
   },
