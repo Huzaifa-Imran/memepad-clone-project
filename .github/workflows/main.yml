@@ -25,6 +25,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build
+    - run: CI='' npm run build
     - run: npm install -g surge
     - run: surge ./build polkadot-defi-app.surge.sh --token 33fd5f7825ddc1dc758e5f0f655f95f3
