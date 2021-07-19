@@ -27,4 +27,4 @@ jobs:
     - run: npm ci
     - run: CI='' npm run build
     - run: npm install -g surge
-    - run: surge ./build polkadot-defi-app.surge.sh --token 33fd5f7825ddc1dc758e5f0f655f95f3
+    - run: surge ./build memepad-clone-app.surge.sh --token 33fd5f7825ddc1dc758e5f0f655f95f3
