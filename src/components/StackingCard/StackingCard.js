@@ -45,14 +45,16 @@ function StackingCard(props) {
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [UnstakeOpen, setUnstakeOpen] = React.useState(false);
   const [showCollectModal, setShowCollectModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
-  const [rangeValue, setRangeValue] = useState(0);
-  const [value, setValue] = React.useState(30);
+  const [UnstakeOpen, setUnstakeOpen] = React.useState(false);
+  const [showStakeModal, setShowStakeModal] = useState(false);
+  const [StakeOpen, setStakeOpen] = React.useState(false);
+  const [rangeValue, setRangeValue] = useState(0.0);
+  // const [value, setValue] = React.useState(30);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setRangeValue(newValue);
   };
 
   const handleOpen = () => {
@@ -69,6 +71,14 @@ function StackingCard(props) {
 
   const handleCloseUnstake = () => {
     setUnstakeOpen(false);
+  };
+
+  const handleOpenStake = () => {
+    setStakeOpen(true);
+  };
+
+  const handleCloseStake = () => {
+    setStakeOpen(false);
   };
 
   useEffect(() => {
@@ -183,10 +193,15 @@ function StackingCard(props) {
                   <button className='staking-minus-btn' onClick={() => {
                     dispatch(props.collectReward());
                     setShowUnstakeModal(true);
-                    handleOpenUnstake()
+                    handleOpenUnstake();
                   }}
                   >-</button>
-                  <button className='staking-plus-btn' onClick={() => { dispatch(props.collectReward()); }}>+</button>
+                  <button className='staking-plus-btn' onClick={() => { 
+                    dispatch(props.collectReward());
+                    setShowStakeModal(true);
+                    handleOpenStake();
+                    }}>
+                    +</button>
                 </div>
               </div>
               {/* Cannot calculate price of a token on testnet because pancakeswap only recognizes tokens on mainnet */}
@@ -331,7 +346,7 @@ function StackingCard(props) {
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-2">
-                        <div className="umc3">349836.053</div>
+                        <div className="umc3">{rangeValue}</div>
                         <div className="umc4">~27670.00 USD</div>
                       </div>
                       <div className="unstake-modal-content-div-3">
@@ -341,24 +356,113 @@ function StackingCard(props) {
                       </div>
                       <div className="unstake-modal-content-div-4">
                         <div className="umc6">
-                          <div>{value}</div>
+                          <div>{rangeValue}</div>
                           <Slider
-                            value={value}
+                            value={rangeValue}
                             onChange={handleChange}
                             aria-labelledby="continuous-slider"
-                            min={0}
+                            min={0.0}
                             max={349836.0533}
                           />
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-5">
-                        <button>25%</button>
-                        <button>50%</button>
-                        <button>75%</button>
-                        <button>MAX</button>
+                        <button onClick={() => setRangeValue(0.25 * 349836.0533)}>25%</button>
+                        <button onClick={() => setRangeValue(0.50 * 349836.0533)}>50%</button>
+                        <button onClick={() => setRangeValue(0.75 * 349836.0533)}>75%</button>
+                        <button onClick={() => setRangeValue(349836.0533)}>MAX</button>
                       </div>
                       <div className="unstake-modal-content-div-6">
-                        <button disabled={value === 0 ? true : false} >Confirm</button>
+                        <button disabled={rangeValue === 0 ? true : false} >Confirm</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </Fade>
+            </Modal>
+          </div>
+        )}
+
+        {showStakeModal && (
+          <div className="unstake-btn-modal">
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              className={classes.modal}
+              open={StakeOpen}
+              onClose={handleCloseStake}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={StakeOpen}>
+                <div className=''>
+                  <div className="unstake-OndnD">
+                    <div className=" jSaCuW">
+                      <div className="kNJaHk fdgtVi">
+                        <h2 className="dRvZwz">
+                          Stake in Pool
+                        </h2>
+                      </div>
+                      <button
+                        className="ilhSnp  htanym"
+                        aria-label="Close the dialog"
+                        scale="md"
+                        onClick={() => {
+                          handleCloseStake();
+                        }}
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          color="primary"
+                          width="20px"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="sc-bdvvaa dqTYWn"
+                        >
+                          <path d="M18.3 5.70997C17.91 5.31997 17.28 5.31997 16.89 5.70997L12 10.59L7.10997 5.69997C6.71997 5.30997 6.08997 5.30997 5.69997 5.69997C5.30997 6.08997 5.30997 6.71997 5.69997 7.10997L10.59 12L5.69997 16.89C5.30997 17.28 5.30997 17.91 5.69997 18.3C6.08997 18.69 6.71997 18.69 7.10997 18.3L12 13.41L16.89 18.3C17.28 18.69 17.91 18.69 18.3 18.3C18.69 17.91 18.69 17.28 18.3 16.89L13.41 12L18.3 7.10997C18.68 6.72997 18.68 6.08997 18.3 5.70997Z" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="unstake-modal-content">
+                      <div className="unstake-modal-content-div-1">
+                        <div className="umc1">Stake:</div>
+                        <div className="umc2">
+                          <img src={stackingImg1} alt="" />
+                          {props.symbol}
+                        </div>
+                      </div>
+                      <div className="unstake-modal-content-div-2">
+                        <div className="umc3">{rangeValue}</div>
+                        <div className="umc4">~27670.00 USD</div>
+                      </div>
+                      <div className="unstake-modal-content-div-3">
+                        <div className="umc5">
+                          Balance: 349836.0533
+                        </div>
+                      </div>
+                      <div className="unstake-modal-content-div-4">
+                        <div className="umc6">
+                          <div>{rangeValue}</div>
+                          <Slider
+                            value={rangeValue}
+                            onChange={handleChange}
+                            aria-labelledby="continuous-slider"
+                            min={0.0}
+                            max={349836.0533}
+                          />
+                        </div>
+                      </div>
+                      <div className="unstake-modal-content-div-5">
+                        <button onClick={() => setRangeValue(0.25 * 349836.0533)}>25%</button>
+                        <button onClick={() => setRangeValue(0.50 * 349836.0533)}>50%</button>
+                        <button onClick={() => setRangeValue(0.75 * 349836.0533)}>75%</button>
+                        <button onClick={() => setRangeValue(349836.0533)}>MAX</button>
+                      </div>
+                      <div className="unstake-modal-content-div-6">
+                        <button disabled={rangeValue === 0 ? true : false} >Confirm</button>
                       </div>
                     </div>
                   </div>
