@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import Form from 'react-bootstrap/Form'
+import Form from "react-bootstrap/Form";
 import stackingImg1 from "../../images/staking-card-1.jpg";
 import "./StackingCard.css";
 import * as RiIcons from "react-icons/ri";
@@ -9,21 +9,21 @@ import { useDispatch } from "react-redux";
 import { IoIosRefresh } from "react-icons/io";
 import { initWeb3 } from "../../store/reducer/web3_reducer";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import Slider from '@material-ui/core/Slider';
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import Slider from "@material-ui/core/Slider";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(6, 8, 2),
   },
@@ -37,10 +37,11 @@ function StackingCard(props) {
   const [image, setImage] = useState(null);
   const [enabled, setEnabled] = useState(false);
   const [connected, setConnected] = useState(false);
-  const [pendingReward, setPendingReward] = useState(0);
+  const [pendingReward, setPendingReward] = useState("0");
   const [totalStakingTokens, setTotalStakingTokens] = useState(0);
   const [rewardPerYear, setRewardPerYear] = useState(0);
-  const [stakedAmount, setStakedAmount] = useState(0)
+  const [stakedAmount, setStakedAmount] = useState(0);
+  const [mepadTokens, setMepadTokens] = useState(0);
   const dispatch = useDispatch();
 
   const classes = useStyles();
@@ -92,17 +93,28 @@ function StackingCard(props) {
     setPendingReward(props.pendingReward);
     setTotalStakingTokens(props.totalStakingTokens);
     setRewardPerYear(props.rewardPerYear);
-    setStakedAmount(props.stakedAmount);
+    setStakedAmount(fixDecimals(props.stakedAmount, 3));
+    setMepadTokens(fixDecimals(props.mepadTokens, 3));
   }, [props, rangeValue]);
 
-  const APR = Math.round((rewardPerYear / totalStakingTokens) * 100);
+  const fixDecimals = (val, dec) => {
+    if(!val)
+      return 0;
+    const decimals = val.split(".")[1];
+    if (decimals && decimals.length > dec) return Number(Number(val).toFixed(dec));
+    return Number(val);
+  };
+
+  const APR = fixDecimals(
+    String((rewardPerYear / totalStakingTokens) * 100),
+    2
+  );
 
   //   if(props.disabled)
   //     setConnected(false);
 
   return (
     <div className="staking-card-main">
-
       <div className="staking-card">
         {banner === "completed" ? (
           <div title="Finished" class="sc-bQCEYZ irmCui">
@@ -131,31 +143,29 @@ function StackingCard(props) {
           </div>
         </div>
 
-
-
-
-        {!connected ? (
+        {connected ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
               <div>{props.symbol} Earned</div>
               <div>
-                <div className='staking-num-and-btns-top'>
+                <div className="staking-num-and-btns-top">
                   <div>
-                    <div>{Math.round(pendingReward * 1000) / 1000}</div>
+                    <div>{fixDecimals(pendingReward, 3)}</div>
                     <div>~27.693.56 USD</div>
                   </div>
                   <div>
-                    <button onClick={() => {
-                      dispatch(props.collectReward());
-                      setShowCollectModal(true);
-                      handleOpen();
-                    }}
-                    >Collect</button>
+                    <button
+                      onClick={() => {
+                        setShowCollectModal(true);
+                        handleOpen();
+                      }}
+                    >
+                      Collect
+                    </button>
                   </div>
                 </div>
               </div>
               {/* Cannot calculate price of a token on testnet because pancakeswap only recognizes tokens on mainnet */}
-              {/* <div>~NaN USD</div> */}
             </div>
           </div>
         ) : (
@@ -166,58 +176,53 @@ function StackingCard(props) {
           </div>
         )}
 
-
-
-
-
-
-
-
-
-
-
-
-
         {enabled ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
               <div>{props.symbol} Staked</div>
-              <div className='staking-num-and-btns'>
+              <div className="staking-num-and-btns">
                 <div>
-                  <div>{Math.round(stakedAmount * 1000) / 1000}</div>
+                  <div>{stakedAmount}</div>
                   <div>~27.693.56 USD</div>
                 </div>
                 <div>
-                  <button className='staking-minus-btn' onClick={() => {
-                    dispatch(props.collectReward());
-                    setShowUnstakeModal(true);
-                    handleOpenUnstake();
-                  }}
-                  >-</button>
-                  <button className='staking-plus-btn' onClick={() => { 
-                    dispatch(props.collectReward());
-                    setShowStakeModal(true);
-                    handleOpenStake();
-                    }}>
-                    +</button>
+                  <button
+                    className="staking-minus-btn"
+                    onClick={() => {
+                      setShowUnstakeModal(true);
+                      setRangeValue(0.0);
+                      handleOpenUnstake();
+                    }}
+                  >
+                    -
+                  </button>
+                  <button
+                    className="staking-plus-btn"
+                    onClick={() => {
+                      setShowStakeModal(true);
+                      setRangeValue(0.0);
+                      handleOpenStake();
+                    }}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-              {/* Cannot calculate price of a token on testnet because pancakeswap only recognizes tokens on mainnet */}
-              {/* <div>~NaN USD</div> */}
             </div>
           </div>
         ) : (
           <div className="staking-card-fourth-div">
             <div className="staking-btn">
-              <button disabled={props.disabled}
+              <button
+                disabled={props.disabled}
                 onClick={
                   connected
                     ? () => {
-                      dispatch(props.approveTokens());
-                    }
+                        dispatch(props.approveTokens());
+                      }
                     : () => {
-                      dispatch(initWeb3());
-                    }
+                        dispatch(initWeb3());
+                      }
                 }
               >
                 {connected ? "Enable" : "Unlock Wallet"}
@@ -241,7 +246,7 @@ function StackingCard(props) {
               }}
             >
               <Fade in={open}>
-                <div className=''>
+                <div className="">
                   <div className="sc-jRQAMF sc-jUotMc ffYIDR OndnD">
                     <div className="sc-hOGjNT jSaCuW">
                       <div className="sc-jRQAMF sc-gKckTs sc-dtMiey iODQYo kNJaHk fdgtVi">
@@ -272,22 +277,33 @@ function StackingCard(props) {
                       <div className="collect-modal-content-div-1">
                         <div className="cmc-1">Harvesting:</div>
                         <div className="cmc-2">
-                          <div className="">1,389.436 {props.symbol}</div>
-                          <div>~109.99 USD</div>
+                          <div className="">
+                            {fixDecimals(pendingReward, 3)} {props.symbol}
+                          </div>
+                          <div>~27670.00 USD</div>
                         </div>
                       </div>
                       <div className="collect-modal-content-div-2">
-                        <button>Confirm</button>
+                        <button
+                          onClick={() => {
+                            dispatch(props.withdrawAndCollectReward('0'));
+                          }}
+                        >
+                          Confirm
+                        </button>
                       </div>
                       <div className="collect-modal-content-div-3">
-                        <button onClick={() => {
-                          handleClose();
-                        }}>Close Window</button>
+                        <button
+                          onClick={() => {
+                            handleClose();
+                          }}
+                        >
+                          Close Window
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </Fade>
             </Modal>
           </div>
@@ -308,13 +324,11 @@ function StackingCard(props) {
               }}
             >
               <Fade in={UnstakeOpen}>
-                <div className=''>
+                <div className="">
                   <div className="unstake-OndnD">
                     <div className=" jSaCuW">
                       <div className="kNJaHk fdgtVi">
-                        <h2 className="dRvZwz">
-                          Unstake
-                        </h2>
+                        <h2 className="dRvZwz">Unstake</h2>
                       </div>
                       <button
                         className="ilhSnp  htanym"
@@ -348,9 +362,7 @@ function StackingCard(props) {
                         <div className="umc4">~27670.00 USD</div>
                       </div>
                       <div className="unstake-modal-content-div-3">
-                        <div className="umc5">
-                          Balance: 349836.0533
-                        </div>
+                        <div className="umc5">Balance: {stakedAmount}</div>
                       </div>
                       <div className="unstake-modal-content-div-4">
                         <div className="umc6">
@@ -360,23 +372,45 @@ function StackingCard(props) {
                             onChange={handleChange}
                             aria-labelledby="continuous-slider"
                             min={0.0}
-                            max={349836.0533}
+                            max={stakedAmount}
                           />
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-5">
-                        <button onClick={() => setRangeValue(0.25 * 349836.0533)}>25%</button>
-                        <button onClick={() => setRangeValue(0.50 * 349836.0533)}>50%</button>
-                        <button onClick={() => setRangeValue(0.75 * 349836.0533)}>75%</button>
-                        <button onClick={() => setRangeValue(349836.0533)}>MAX</button>
+                        <button
+                          onClick={() => setRangeValue(0.25 * stakedAmount)}
+                        >
+                          25%
+                        </button>
+                        <button
+                          onClick={() => setRangeValue(0.5 * stakedAmount)}
+                        >
+                          50%
+                        </button>
+                        <button
+                          onClick={() => setRangeValue(0.75 * stakedAmount)}
+                        >
+                          75%
+                        </button>
+                        <button onClick={() => setRangeValue(stakedAmount)}>
+                          MAX
+                        </button>
                       </div>
                       <div className="unstake-modal-content-div-6">
-                        <button disabled={rangeValue === 0 ? true : false} >Confirm</button>
+                        <button
+                          disabled={rangeValue === 0 ? true : false}
+                          onClick={() => {
+                            dispatch(
+                              props.withdrawAndCollectReward(String(rangeValue))
+                            );
+                          }}
+                        >
+                          Confirm
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </Fade>
             </Modal>
           </div>
@@ -397,13 +431,11 @@ function StackingCard(props) {
               }}
             >
               <Fade in={StakeOpen}>
-                <div className=''>
+                <div className="">
                   <div className="unstake-OndnD">
                     <div className=" jSaCuW">
                       <div className="kNJaHk fdgtVi">
-                        <h2 className="dRvZwz">
-                          Stake in Pool
-                        </h2>
+                        <h2 className="dRvZwz">Stake in Pool</h2>
                       </div>
                       <button
                         className="ilhSnp  htanym"
@@ -437,9 +469,7 @@ function StackingCard(props) {
                         <div className="umc4">~27670.00 USD</div>
                       </div>
                       <div className="unstake-modal-content-div-3">
-                        <div className="umc5">
-                          Balance: 349836.0533
-                        </div>
+                        <div className="umc5">Balance: {mepadTokens}</div>
                       </div>
                       <div className="unstake-modal-content-div-4">
                         <div className="umc6">
@@ -449,18 +479,41 @@ function StackingCard(props) {
                             onChange={handleChange}
                             aria-labelledby="continuous-slider"
                             min={0.0}
-                            max={349836.0533}
+                            max={mepadTokens}
                           />
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-5">
-                        <button onClick={() => setRangeValue(0.25 * 349836.0533)}>25%</button>
-                        <button onClick={() => setRangeValue(0.50 * 349836.0533)}>50%</button>
-                        <button onClick={() => setRangeValue(0.75 * 349836.0533)}>75%</button>
-                        <button onClick={() => setRangeValue(349836.0533)}>MAX</button>
+                        <button
+                          onClick={() => setRangeValue(0.25 * mepadTokens)}
+                        >
+                          25%
+                        </button>
+                        <button
+                          onClick={() => setRangeValue(0.5 * mepadTokens)}
+                        >
+                          50%
+                        </button>
+                        <button
+                          onClick={() => setRangeValue(0.75 * mepadTokens)}
+                        >
+                          75%
+                        </button>
+                        <button onClick={() => setRangeValue(mepadTokens)}>
+                          MAX
+                        </button>
                       </div>
                       <div className="unstake-modal-content-div-6">
-                        <button disabled={rangeValue === 0 ? true : false} >Confirm</button>
+                        <button
+                          disabled={rangeValue === 0 ? true : false}
+                          onClick={() => {
+                            dispatch(
+                              props.stakeMepad(String(rangeValue))
+                            );
+                          }}
+                        >
+                          Confirm
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -469,10 +522,6 @@ function StackingCard(props) {
             </Modal>
           </div>
         )}
-
-
-
-
 
         <div className="staking-card-fifth-div">
           <div className="staking-btn-text">
@@ -529,7 +578,6 @@ function StackingCard(props) {
         )}
       </div>
     </div>
-
   );
 }
 

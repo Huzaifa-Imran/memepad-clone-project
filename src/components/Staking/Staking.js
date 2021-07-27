@@ -1,19 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import poolImg from "../../images/bg.9f4bcc65.png";
 import img1 from "../../images/smallSafe.jpg";
 import img2 from "../../images/smallElon.png";
 import StackingCard from "../StackingCard/StackingCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { approveTokens } from "../../store/reducer/web3_reducer";
-import { collectReward } from "../../store/reducer/staking_reducer";
+import {
+  initInfo,
+  loadInfo,
+  stakeMepad,
+  withdrawAndCollectReward,
+} from "../../store/reducer/staking_reducer";
 import memepad from "../../store/reducer/web3_reducer/memepad.json";
 import "./Staking.css";
 
 function Staking() {
   const [switchBtnToggle, setSwitchBtnToggle] = useState(true);
-  const { connected, enabled } = useSelector((state) => state.web3);
-  const { pendingReward, stakedAmount, rewardPerYear, totalStakingTokens } = useSelector((state) => state.staking);
+  const { connected, enabled, stakingUrl } = useSelector((state) => state.web3);
+  const {
+    pendingReward,
+    stakedAmount,
+    rewardPerYear,
+    totalStakingTokens,
+    mepadTokens,
+  } = useSelector((state) => state.staking);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if(connected)
+      dispatch(initInfo());
+    }, 10000);
+    return () => {
+      clearInterval(interval);
+    };
+  });
 
   return (
     <div className="staking-wrapper">
@@ -76,15 +98,17 @@ function Staking() {
                   title="MemePad Staking"
                   subTitle="Stake MEPAD, Earn MEPAD"
                   symbol="MEPAD"
-                  contractAddress={memepad.stakingAddress}
-                  connected={!connected}
+                  contractAddress={stakingUrl}
+                  connected={connected}
                   enabled={enabled}
                   pendingReward={pendingReward}
                   stakedAmount={stakedAmount}
                   totalStakingTokens={totalStakingTokens}
                   rewardPerYear={rewardPerYear}
+                  mepadTokens={mepadTokens}
                   approveTokens={approveTokens}
-                  collectReward={collectReward}
+                  withdrawAndCollectReward={withdrawAndCollectReward}
+                  stakeMepad={stakeMepad}
                 />
               </Col>
               <Col lg={4} md={6}></Col>

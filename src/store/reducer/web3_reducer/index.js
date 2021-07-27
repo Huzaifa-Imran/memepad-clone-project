@@ -153,9 +153,9 @@ export const approveTokens = createAsyncThunk(
         .pow(web3.utils.toBN(256))
         .sub(web3.utils.toBN(1));
       const allowance = await tokenContract.methods
-          .allowance(address, memepad.stakingAddress)
-          .call();
-      if (allowance > Number(maxUint)/10) return;
+        .allowance(address, memepad.stakingAddress)
+        .call();
+      if (allowance > Number(maxUint) / 10) return;
       await tokenContract.methods
         .approve(memepad.stakingAddress, maxUint)
         .send({ from: address });
@@ -173,11 +173,11 @@ const web3Slice = createSlice({
     stakingContract: null,
     tokenContract: null,
     address: null,
+    shortAddress: null,
     connected: false,
-    bscScan: {
-      url: "https://testnet.bscscan.com",
-      transaction: "Address",
-    },
+    accountUrl: "#",
+    stakingUrl: "#",
+    tokenUrl: "#",
   },
   reducers: {
     disconnectWallet: (state) => {
@@ -196,12 +196,18 @@ const web3Slice = createSlice({
     },
     [fetchAccount.fulfilled]: (state, action) => {
       state.address = action.payload.address;
-      state.bscScan.url =
-        "https://testnet.bscscan.com/address/" + action.payload.address;
-      state.bscScan.transaction =
+      state.shortAddress =
         action.payload.address.slice(0, 6) +
         "..." +
         action.payload.address.slice(38, 42);
+      state.accountUrl =
+        "https://testnet.bscscan.com/address/" + action.payload.address;
+      state.stakingUrl =
+        "https://testnet.bscscan.com/address/" +
+        memepad.stakingAddress +
+        "#code";
+      state.tokenUrl =
+        "https://testnet.bscscan.com/address/" + memepad.tokenAddress + "#code";
       state.connected = true;
       state.enabled = false;
     },

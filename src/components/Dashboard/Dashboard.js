@@ -20,7 +20,7 @@ function Dashboard(props) {
     const [title, setTitle] = useState(null);
     const dispatch = useDispatch();
     const connected = useSelector((state) => state.web3.connected);
-    const smallAddress = useSelector((state) => state.web3.bscScan.transaction);
+    const smallAddress = useSelector((state) => state.web3.shortAddress);
     const [showSidebar, setShowSidebar] = useState(true);
     let location = useLocation();
 
