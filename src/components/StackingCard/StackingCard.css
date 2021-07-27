@@ -217,6 +217,7 @@
   justify-content: center;
   transition: opacity 0.15s ease-in;
   font-family: Rubik, sans-serif;
+  cursor: pointer;
 }
 
 .staking-btn button:hover {
@@ -930,12 +931,12 @@
   font-family: Rubik, sans-serif;
 } */
 
-button[disabled]:active, button[disabled],
+.unstake-modal-content-div-6 button[disabled]:active, .unstake-modal-content-div-6 button[disabled],
 input[type="button"][disabled]:active,
 input[type="button"][disabled],
 input[type="submit"][disabled]:active,
 input[type="submit"][disabled] ,
-button[disabled]:hover,
+.unstake-modal-content-div-6 button[disabled]:hover,
 input[type="button"][disabled]:hover,
 input[type="submit"][disabled]:hover
 {

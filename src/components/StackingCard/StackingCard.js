@@ -134,15 +134,14 @@ function StackingCard(props) {
 
 
 
-        {connected ? (
+        {!connected ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
               <div>{props.symbol} Earned</div>
               <div>
                 <div className='staking-num-and-btns-top'>
                   <div>
-                    {/* <div>{Math.round(pendingReward * 1000) / 1000}</div> */}
-                    <div>349,836.053</div>
+                    <div>{Math.round(pendingReward * 1000) / 1000}</div>
                     <div>~27.693.56 USD</div>
                   </div>
                   <div>
@@ -179,14 +178,13 @@ function StackingCard(props) {
 
 
 
-        {!enabled ? (
+        {enabled ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
               <div>{props.symbol} Staked</div>
               <div className='staking-num-and-btns'>
                 <div>
-                  {/* <div>{Math.round(stakedAmount * 1000) / 1000}</div> */}
-                  <div>349,836.053</div>
+                  <div>{Math.round(stakedAmount * 1000) / 1000}</div>
                   <div>~27.693.56 USD</div>
                 </div>
                 <div>
@@ -467,7 +465,6 @@ function StackingCard(props) {
                     </div>
                   </div>
                 </div>
-
               </Fade>
             </Modal>
           </div>
