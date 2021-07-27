@@ -5,12 +5,12 @@ import { BiRocket } from "react-icons/bi";
 export const SidebarData = [
   {
     title: 'Projects',
-    path: '/projects',
+    path: '/dashboard/projects',
     icon: <BiRocket />,
   },
   {
     title: 'Staking',
-    path: '/staking',
+    path: '/dashboard/staking',
     icon: <RiIcons.RiCoinFill />,
   },
 ];

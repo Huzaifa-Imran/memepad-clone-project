@@ -85,7 +85,7 @@ function CardDetails(props) {
             <Row>
                 <Col lg={12} md={12}>
                     <div className='details-breadcrumb'>
-                        <Link to='/projects'>Projects</Link>
+                        <Link to='/dashboard/projects'>Projects</Link>
                         <span>&gt;</span>
                         <span>Title</span>
                     </div>

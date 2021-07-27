@@ -7,8 +7,8 @@ function Footer() {
         <footer className='footer'>
             <div className='footer-div-1'>
                 <ul>
-                    <li><Link to="/terms">Terms & Conditions</Link></li>
-                    <li><Link to="/privacy">Privacy Policy</Link></li>
+                    <li><Link to="/dashboard/terms">Terms & Conditions</Link></li>
+                    <li><Link to="/dashboard/privacy">Privacy Policy</Link></li>
                 </ul>
             </div>
             <div className='footer-div-2'>

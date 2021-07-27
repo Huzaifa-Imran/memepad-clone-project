@@ -114,9 +114,9 @@
     padding: 5% 5% !important;
   }
 
-  .content-container-main {
+  /* .content-container-main {
     margin-top: 7rem;
-  }
+  } */
 
   .ant-table-content {
     overflow-x: auto !important;

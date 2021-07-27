@@ -170,7 +170,7 @@ function Projects(props) {
                         </div>
                     </Col> */}
                     <Col lg={4} md={6}>
-                        <Link to='/projects/details'>
+                        <Link to='/dashboard/projects/details'>
                             <CompletedCards
                                 bnb={289.6}
                                 outOfBNB={337}
@@ -181,7 +181,7 @@ function Projects(props) {
                         </Link>
                     </Col>
                     <Col lg={4} md={6}>
-                        <Link to='/projects/details'>
+                        <Link to='/dashboard/projects/details'>
                             <CompletedCards
                                 bnb={129.1}
                                 outOfBNB={150}
@@ -193,7 +193,7 @@ function Projects(props) {
                     </Col>
 
                     <Col lg={4} md={6}>
-                        <Link to='/projects/details'>
+                        <Link to='/dashboard/projects/details'>
                             <CompletedCards
                                 bnb={222.2}
                                 outOfBNB={234}
@@ -205,7 +205,7 @@ function Projects(props) {
                     </Col>
 
                     <Col lg={4} md={6}>
-                        <Link to='/projects/details'>
+                        <Link to='/dashboard/projects/details'>
                             <CompletedCards
                                 bnb={130.6}
                                 outOfBNB={132}

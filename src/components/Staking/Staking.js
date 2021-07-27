@@ -13,8 +13,7 @@ import "./Staking.css";
 function Staking() {
   const [switchBtnToggle, setSwitchBtnToggle] = useState(true);
   const { connected, enabled } = useSelector((state) => state.web3);
-  const { pendingReward, stakedAmount, rewardPerYear, totalStakingTokens } =
-    useSelector((state) => state.staking);
+  const { pendingReward, stakedAmount, rewardPerYear, totalStakingTokens } = useSelector((state) => state.staking);
 
   return (
     <div className="staking-wrapper">
@@ -78,7 +77,7 @@ function Staking() {
                   subTitle="Stake MEPAD, Earn MEPAD"
                   symbol="MEPAD"
                   contractAddress={memepad.stakingAddress}
-                  connected={connected}
+                  connected={!connected}
                   enabled={enabled}
                   pendingReward={pendingReward}
                   stakedAmount={stakedAmount}

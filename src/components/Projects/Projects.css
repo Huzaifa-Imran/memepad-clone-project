@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap");
 
-
 a {
   text-decoration: none !important;
 }
@@ -26,6 +25,39 @@ a:hover {
 
 .banner-img img {
   max-width: 220px;
+}
+
+@media (max-width: 767px) {
+  .banner-img {
+    display: none;
+  }
+
+  .project-banner-container {
+    max-height: 120px !important;
+    padding: 15px 70px;
+  }
+
+  .banner-container-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .banner-container-content div {
+    width: 100%;
+  }
+
+  .banner-container-content div h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .banner-container-content div p {
+    font-size: 12px;
+    text-align: center;
+  }
 }
 
 .projects-launchTitle {

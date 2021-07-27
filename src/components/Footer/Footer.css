@@ -50,7 +50,7 @@
 }
 
 .footer-div-2 a{
-  font-family: "Circular Std", sans-serif;
+  font-family: Rubik, sans-serif;
   font-size: 14px;
   font-weight: 400;
   font-stretch: normal;
@@ -60,4 +60,10 @@
   text-align: right;
   color: #9b9eb0;
   text-decoration: none;
+}
+
+.footer-div-2 a:hover{
+  opacity: 0.7;
+  text-decoration: none;
+  color: #9b9eb0;
 }
