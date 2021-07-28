@@ -43,7 +43,7 @@ function LandingPage() {
       <div className='mt-5'>
         <div className='div-two'>
           <div><img src={logo} alt="logo" /></div>
-          <div> <Link to='/dashboard'><button>Enter Application</button></Link> </div>
+          <Link to='/dashboard'><div><button>Enter Application</button></div></Link>
         </div>
       </div>
 
@@ -142,12 +142,14 @@ function LandingPage() {
                     />
                     <strong>Buy on PancakeSwap</strong>
                   </button>
-                  <button className="dashboard-enter-btn">
-                    <Link to='/dashboard'><span>Enter Application</span></Link>
-                  </button>
+                  <Link to='/dashboard'>
+                    <button className="dashboard-enter-btn">
+                      <span>Enter Application</span>
+                    </button>
+                  </Link>
                 </section>
 
-                
+
                 <section className="binance-smart">
                   <p className="text-1">Exclusively on</p>
                   <img
@@ -3711,7 +3713,7 @@ function LandingPage() {
         </div>
       </div>
 
-      
+
       <div className='mt-5'>
         <div className="div-five">
           <Container>
