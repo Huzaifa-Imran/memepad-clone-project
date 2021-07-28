@@ -24,6 +24,10 @@ function Dashboard(props) {
     const [showSidebar, setShowSidebar] = useState(true);
     let location = useLocation();
 
+    const getToggleStatus =(props) => {
+        setShowSidebar(!showSidebar)
+    }
+
     useEffect(() => {
         if (location.pathname === "/dashboard/projects") {
             setTitle("Projects");
@@ -37,7 +41,7 @@ function Dashboard(props) {
         <div className='main-layout'>
             <aside className={`sidebar-container ${showSidebar && "sidebar-toggle"}`}>
                 <div className='sidebar-body'>
-                    <SidebarNew />
+                    <SidebarNew  getToggleStatus={getToggleStatus}/>
                 </div>
             </aside>
             <div className="layout-content">
