@@ -5,88 +5,83 @@ import whenNoBanner from '../../images/whenNoBanner.png';
 import whenNoSmallImage from '../../images/whenNoSmallImage.png';
 import '../Projects/Projects.css';
 
-
 function Cards(props) {
+    const projDetails = props.projDetails;
 
-    const [bnb, setBnb] = useState(null)
-    const [outOfBNB, setOutOfBNB] = useState(null);
-    const [label, setLabel] = useState(null);
+    const fixDecimals = (val, dec) => {
+        if (!val) return 0;
+        const decimals = String(val).split(".")[1];
+        if (decimals && decimals.length > dec)
+          return Number(val.toFixed(dec));
+        return val;
+      };
 
-    const now = (bnb / outOfBNB) * 100;
-
-    const progressInstance = <ProgressBar now={now} label={`${now}%`} srOnly />;
-
-    useEffect(() => {
-        // console.log(props);
-        setBnb(props.bnb);
-        setOutOfBNB(props.outOfBNB);
-        setLabel(props.label);
-    }, [props])
+      const now = ( projDetails.soldAmountInBnb / projDetails.totalTokensInBnb) * 100;
+      const progressInstance = (
+          <ProgressBar now={now} label={`${now}%`} srOnly />
+      );
 
     return (
         <div>
-            <div className={`memepad-card mt-3 ${label === 'comingSoon' && "memepad-card-disable"}`}>
-
-
+            <div className='memepad-card mt-4'>
 
                 <div className='card-label-container'>
                     <div className='memepad-card-1st-div'>
-                        <img src={whenNoBanner} alt="" />
+                        <img src={!projDetails.image ? whenNoBanner : projDetails.image} alt="" />
                     </div>
-                    <div className={`status-label-img ${label === 'comingSoon' && "label-bg-color-black"}`}>
+                    <div className="status-label-img label-bg-color-green">
                         <span></span>
-                        <span>COMING SOON</span>
+                        <span>{projDetails.isFinished ? "COMPLETED" : "LIVE"}</span>
                     </div>
                 </div>
-
-
-
 
                 <div className='second-third-div-background p-2'>
                     <div className='memepad-card-2nd-div'>
                         <div className="img-txt">
                             <div>
-                                <img src={whenNoSmallImage} alt="" width='60' height='60' />
+                                <img src={!projDetails.smallImage ? whenNoSmallImage : projDetails.smallImage} alt="" width='60' height='60' />
                                 <span className='small-2nd-div-img'>
                                     <img src={eth} alt="" width='20' height='20' />
                                 </span>
                             </div>
                             <div className='only-text mt-2' >
-                                <div>Simlancer</div>
-                                <span>SIM</span>
+                                <div>{projDetails.name}</div>
+                                <span>{projDetails.symbol}</span>
                             </div>
                         </div>
-                        <div className="mt-2">
-                            <div className='label'>Progress</div>
+                        <div className="mt-3">
+                            <div className='label'>
+                                Sale Completion
+                            </div>
                             <div>{progressInstance}</div>
                             <div className='progress-num'>
                                 <div className='stats-label'>
-                                    {`${bnb ? Math.round(now) : '0'}%`}
+                                    {`${fixDecimals(now, 0)}%`}
                                 </div>
                                 <div className='stats-label'>
-                                    {`${bnb} / ${outOfBNB}.BNB`}
+                                    {`${fixDecimals(projDetails.soldAmountInBnb, 1)} / ${fixDecimals(projDetails.totalTokensInBnb, 1)} BNB`}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className='memepad-card-3rd-div'>
+                    {/* <div className='memepad-card-3rd-div'>
                         <div>
-                            <div className='stats-label'>Total Raise</div>
-                            <div className='stats-num'>{outOfBNB} BNB</div>
+                            <div className='stats-num'>$0.00001</div>
+                            <div className='stats-label'>Initial price</div>
                         </div>
                         <div>
-                            <div className='stats-label'>SIM For Sale</div>
-                            <div className='stats-num'>{236000000}</div>
+                            <div className='stats-num'>$0.00000</div>
+                            <div className='stats-label'>ATH <span className='green-span'>0.01%</span> </div>
                         </div>
                         <div>
-                            <div className='stats-label'>Buying Coin</div>
-                            <div className='stats-num'>BNB</div>
+                            <div className='stats-num'>N/A</div>
+                            <div className='stats-label'>Price <span className='red-span'>0.00%</span> </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
     )
 }
 
-export default Cards
+export default Cards;

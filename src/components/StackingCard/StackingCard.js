@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Form from "react-bootstrap/Form";
-import stackingImg1 from "../../images/staking-card-1.jpg";
 import "./StackingCard.css";
+import smallMepad from "../../images/staking-card-1.jpg";
 import * as RiIcons from "react-icons/ri";
 import * as FiIcons from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoIosRefresh } from "react-icons/io";
-import { initWeb3 } from "../../store/reducer/web3_reducer";
-
+import { connectWallet, initWeb3 } from "../../store/reducer/web3_reducer";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Slider from "@material-ui/core/Slider";
+import {
+  approveMepadTokens,
+  stakeMepad,
+  withdrawAndCollectReward,
+} from "../../store/reducer/staking_reducer";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -30,85 +34,43 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function StackingCard(props) {
+  const stakeDetails = useSelector((state) => state.staking[props.stakeId]);
+  const { connected } = useSelector((state) => state.web3);
+  const { mepadTokens } = useSelector((state) => state.staking);
   const [showTotalStacked, setShowTotalStacked] = useState(false);
-  const [banner, setBanner] = useState(null);
-  const [title, setTitle] = useState(null);
-  const [subtitle, setSubtitle] = useState(null);
-  const [image, setImage] = useState(null);
-  const [enabled, setEnabled] = useState(false);
-  const [connected, setConnected] = useState(false);
-  const [pendingReward, setPendingReward] = useState("0");
-  const [totalStakingTokens, setTotalStakingTokens] = useState(0);
-  const [rewardPerYear, setRewardPerYear] = useState(0);
-  const [stakedAmount, setStakedAmount] = useState(0);
-  const [mepadTokens, setMepadTokens] = useState(0);
   const dispatch = useDispatch();
 
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
   const [showCollectModal, setShowCollectModal] = useState(false);
-  const [showUnstakeModal, setShowUnstakeModal] = useState(false);
-  const [UnstakeOpen, setUnstakeOpen] = React.useState(false);
-  const [showStakeModal, setShowStakeModal] = useState(false);
-  const [StakeOpen, setStakeOpen] = React.useState(false);
+  const [showStakingModal, setShowStakingModal] = useState(null);
   const [rangeValue, setRangeValue] = useState(0.0);
-  // const [value, setValue] = React.useState(30);
 
   const handleChange = (event, newValue) => {
     setRangeValue(newValue);
   };
 
-  const handleOpen = () => {
-    setOpen(true);
+  const handleCloseCollect = () => {
+    setShowCollectModal(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseStaking = () => {
+    setShowStakingModal(null);
   };
-
-  const handleOpenUnstake = () => {
-    setUnstakeOpen(true);
-  };
-
-  const handleCloseUnstake = () => {
-    setUnstakeOpen(false);
-  };
-
-  const handleOpenStake = () => {
-    setStakeOpen(true);
-  };
-
-  const handleCloseStake = () => {
-    setStakeOpen(false);
-  };
-
-  useEffect(() => {
-    // console.log(props);
-    setBanner(props.banner);
-    setTitle(props.title);
-    setSubtitle(props.subTitle);
-    setImage(props.image);
-    setEnabled(props.enabled);
-    setConnected(props.connected);
-    setPendingReward(props.pendingReward);
-    setTotalStakingTokens(props.totalStakingTokens);
-    setRewardPerYear(props.rewardPerYear);
-    setStakedAmount(fixDecimals(props.stakedAmount, 3));
-    setMepadTokens(fixDecimals(props.mepadTokens, 3));
-  }, [props, rangeValue]);
 
   const fixDecimals = (val, dec) => {
-    if(!val)
-      return 0;
-    const decimals = val.split(".")[1];
-    if (decimals && decimals.length > dec) return Number(Number(val).toFixed(dec));
-    return Number(val);
+    if (!val) return 0;
+    const decimals = String(val).split(".")[1];
+    if (decimals && decimals.length > dec) return Number(val.toFixed(dec));
+    return val;
   };
 
   const APR = fixDecimals(
-    String((rewardPerYear / totalStakingTokens) * 100),
+    (stakeDetails.rewardPerYear / stakeDetails.totalStakingTokens) * 100,
     2
   );
+
+  const modalValues =
+    showStakingModal === "Stake" ? mepadTokens : stakeDetails.stakedAmount;
 
   //   if(props.disabled)
   //     setConnected(false);
@@ -116,48 +78,47 @@ function StackingCard(props) {
   return (
     <div className="staking-card-main">
       <div className="staking-card">
-        {banner === "completed" ? (
-          <div title="Finished" class="sc-bQCEYZ irmCui">
-            <div title="Finished">Finished</div>
+        {props.disabled && (
+          <div class="sc-bQCEYZ irmCui">
+            <div>Finished</div>
           </div>
-        ) : null}
+        )}
         <div className="staking-card-first-div">
           <div className="staking-text-1">
-            <div>{title}</div>
-            <div>{subtitle}</div>
+            <div>{stakeDetails.title}</div>
+            <div>{stakeDetails.subTitle}</div>
           </div>
           <div className="staking-img-1">
-            <img src={image ? image : stackingImg1} alt="" />
+            <img src={stakeDetails.image} alt="" />
             <div className="staking-img-small-icon">
-              <img src={stackingImg1} alt="" width="15" height="15" />
+              <img src={smallMepad} alt="" width="15" height="15" />
             </div>
           </div>
         </div>
         <div className="staking-card-second-div">
           <div className="staking-text-2">
             <div>APY:</div>
-            <div>
-              {connected ? APR : ""}
-              {connected ? "%" : ""}
-            </div>
+            <div>{!props.disabled && APR > 0 && `${APR}%`}</div>
           </div>
         </div>
 
         {connected ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
-              <div>{props.symbol} Earned</div>
+              <div>{stakeDetails.symbol} Earned</div>
               <div>
                 <div className="staking-num-and-btns-top">
                   <div>
-                    <div>{fixDecimals(pendingReward, 3)}</div>
+                    <div>{fixDecimals(stakeDetails.pendingReward, 3)}</div>
                     <div>~27.693.56 USD</div>
                   </div>
                   <div>
                     <button
+                      disabled={
+                        fixDecimals(stakeDetails.pendingReward, 0) === 0
+                      }
                       onClick={() => {
                         setShowCollectModal(true);
-                        handleOpen();
                       }}
                     >
                       Collect
@@ -176,22 +137,21 @@ function StackingCard(props) {
           </div>
         )}
 
-        {enabled ? (
+        {stakeDetails.enabled ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
-              <div>{props.symbol} Staked</div>
+              <div>{stakeDetails.symbol} Staked</div>
               <div className="staking-num-and-btns">
                 <div>
-                  <div>{stakedAmount}</div>
+                  <div>{stakeDetails.stakedAmount}</div>
                   <div>~27.693.56 USD</div>
                 </div>
                 <div>
                   <button
                     className="staking-minus-btn"
                     onClick={() => {
-                      setShowUnstakeModal(true);
                       setRangeValue(0.0);
-                      handleOpenUnstake();
+                      setShowStakingModal("Unstake");
                     }}
                   >
                     -
@@ -199,9 +159,8 @@ function StackingCard(props) {
                   <button
                     className="staking-plus-btn"
                     onClick={() => {
-                      setShowStakeModal(true);
                       setRangeValue(0.0);
-                      handleOpenStake();
+                      setShowStakingModal("Stake");
                     }}
                   >
                     +
@@ -218,10 +177,10 @@ function StackingCard(props) {
                 onClick={
                   connected
                     ? () => {
-                        dispatch(props.approveTokens());
+                        dispatch(approveMepadTokens(props.stakeId));
                       }
                     : () => {
-                        dispatch(initWeb3());
+                        dispatch(connectWallet());
                       }
                 }
               >
@@ -237,30 +196,28 @@ function StackingCard(props) {
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
               className={classes.modal}
-              open={open}
-              onClose={handleClose}
+              open={showCollectModal}
+              onClose={handleCloseCollect}
               closeAfterTransition
               BackdropComponent={Backdrop}
               BackdropProps={{
                 timeout: 500,
               }}
             >
-              <Fade in={open}>
+              <Fade in={showCollectModal}>
                 <div className="">
                   <div className="sc-jRQAMF sc-jUotMc ffYIDR OndnD">
                     <div className="sc-hOGjNT jSaCuW">
                       <div className="sc-jRQAMF sc-gKckTs sc-dtMiey iODQYo kNJaHk fdgtVi">
                         <h2 className="sc-gsDJrp sc-iwjezw dPBltW dRvZwz">
-                          {props.symbol} Harvest
+                          {stakeDetails.symbol} Harvest
                         </h2>
                       </div>
                       <button
                         className="sc-hKwCoD ilhSnp sc-eCImvq htanym"
                         aria-label="Close the dialog"
                         scale="md"
-                        onClick={() => {
-                          handleClose();
-                        }}
+                        onClick={handleCloseCollect}
                       >
                         <svg
                           viewBox="0 0 24 24"
@@ -278,7 +235,8 @@ function StackingCard(props) {
                         <div className="cmc-1">Harvesting:</div>
                         <div className="cmc-2">
                           <div className="">
-                            {fixDecimals(pendingReward, 3)} {props.symbol}
+                            {fixDecimals(stakeDetails.pendingReward, 3)}{" "}
+                            {stakeDetails.symbol}
                           </div>
                           <div>~27670.00 USD</div>
                         </div>
@@ -286,18 +244,20 @@ function StackingCard(props) {
                       <div className="collect-modal-content-div-2">
                         <button
                           onClick={() => {
-                            dispatch(props.withdrawAndCollectReward('0'));
+                            dispatch(
+                              withdrawAndCollectReward({
+                                amount: 0,
+                                id: props.stakeId,
+                              })
+                            );
+                            handleCloseCollect();
                           }}
                         >
                           Confirm
                         </button>
                       </div>
                       <div className="collect-modal-content-div-3">
-                        <button
-                          onClick={() => {
-                            handleClose();
-                          }}
-                        >
+                        <button onClick={handleCloseCollect}>
                           Close Window
                         </button>
                       </div>
@@ -309,34 +269,32 @@ function StackingCard(props) {
           </div>
         )}
 
-        {showUnstakeModal && (
+        {showStakingModal && (
           <div className="unstake-btn-modal">
             <Modal
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
               className={classes.modal}
-              open={UnstakeOpen}
-              onClose={handleCloseUnstake}
+              open={showStakingModal !== null}
+              onClose={handleCloseStaking}
               closeAfterTransition
               BackdropComponent={Backdrop}
               BackdropProps={{
                 timeout: 500,
               }}
             >
-              <Fade in={UnstakeOpen}>
+              <Fade in={showStakingModal !== null}>
                 <div className="">
                   <div className="unstake-OndnD">
                     <div className=" jSaCuW">
                       <div className="kNJaHk fdgtVi">
-                        <h2 className="dRvZwz">Unstake</h2>
+                        <h2 className="dRvZwz">{showStakingModal}</h2>
                       </div>
                       <button
                         className="ilhSnp  htanym"
                         aria-label="Close the dialog"
                         scale="md"
-                        onClick={() => {
-                          handleCloseUnstake();
-                        }}
+                        onClick={handleCloseStaking}
                       >
                         <svg
                           viewBox="0 0 24 24"
@@ -351,10 +309,10 @@ function StackingCard(props) {
                     </div>
                     <div className="unstake-modal-content">
                       <div className="unstake-modal-content-div-1">
-                        <div className="umc1">Unstake:</div>
+                        <div className="umc1">{showStakingModal}:</div>
                         <div className="umc2">
-                          <img src={stackingImg1} alt="" />
-                          {props.symbol}
+                          <img src={stakeDetails.image} alt="" />
+                          {stakeDetails.symbol}
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-2">
@@ -362,7 +320,7 @@ function StackingCard(props) {
                         <div className="umc4">~27670.00 USD</div>
                       </div>
                       <div className="unstake-modal-content-div-3">
-                        <div className="umc5">Balance: {stakedAmount}</div>
+                        <div className="umc5">Balance: {modalValues}</div>
                       </div>
                       <div className="unstake-modal-content-div-4">
                         <div className="umc6">
@@ -372,27 +330,27 @@ function StackingCard(props) {
                             onChange={handleChange}
                             aria-labelledby="continuous-slider"
                             min={0.0}
-                            max={stakedAmount}
+                            max={modalValues}
                           />
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-5">
                         <button
-                          onClick={() => setRangeValue(0.25 * stakedAmount)}
+                          onClick={() => setRangeValue(0.25 * modalValues)}
                         >
                           25%
                         </button>
                         <button
-                          onClick={() => setRangeValue(0.5 * stakedAmount)}
+                          onClick={() => setRangeValue(0.5 * modalValues)}
                         >
                           50%
                         </button>
                         <button
-                          onClick={() => setRangeValue(0.75 * stakedAmount)}
+                          onClick={() => setRangeValue(0.75 * modalValues)}
                         >
                           75%
                         </button>
-                        <button onClick={() => setRangeValue(stakedAmount)}>
+                        <button onClick={() => setRangeValue(modalValues)}>
                           MAX
                         </button>
                       </div>
@@ -401,115 +359,17 @@ function StackingCard(props) {
                           disabled={rangeValue === 0 ? true : false}
                           onClick={() => {
                             dispatch(
-                              props.withdrawAndCollectReward(String(rangeValue))
+                              showStakingModal == "Stake"
+                                ? withdrawAndCollectReward({
+                                    amount: String(rangeValue),
+                                    id: props.stakeId,
+                                  })
+                                : stakeMepad({
+                                    amount: String(rangeValue),
+                                    id: props.stakeId,
+                                  })
                             );
-                          }}
-                        >
-                          Confirm
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Fade>
-            </Modal>
-          </div>
-        )}
-
-        {showStakeModal && (
-          <div className="unstake-btn-modal">
-            <Modal
-              aria-labelledby="transition-modal-title"
-              aria-describedby="transition-modal-description"
-              className={classes.modal}
-              open={StakeOpen}
-              onClose={handleCloseStake}
-              closeAfterTransition
-              BackdropComponent={Backdrop}
-              BackdropProps={{
-                timeout: 500,
-              }}
-            >
-              <Fade in={StakeOpen}>
-                <div className="">
-                  <div className="unstake-OndnD">
-                    <div className=" jSaCuW">
-                      <div className="kNJaHk fdgtVi">
-                        <h2 className="dRvZwz">Stake in Pool</h2>
-                      </div>
-                      <button
-                        className="ilhSnp  htanym"
-                        aria-label="Close the dialog"
-                        scale="md"
-                        onClick={() => {
-                          handleCloseStake();
-                        }}
-                      >
-                        <svg
-                          viewBox="0 0 24 24"
-                          color="primary"
-                          width="20px"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="sc-bdvvaa dqTYWn"
-                        >
-                          <path d="M18.3 5.70997C17.91 5.31997 17.28 5.31997 16.89 5.70997L12 10.59L7.10997 5.69997C6.71997 5.30997 6.08997 5.30997 5.69997 5.69997C5.30997 6.08997 5.30997 6.71997 5.69997 7.10997L10.59 12L5.69997 16.89C5.30997 17.28 5.30997 17.91 5.69997 18.3C6.08997 18.69 6.71997 18.69 7.10997 18.3L12 13.41L16.89 18.3C17.28 18.69 17.91 18.69 18.3 18.3C18.69 17.91 18.69 17.28 18.3 16.89L13.41 12L18.3 7.10997C18.68 6.72997 18.68 6.08997 18.3 5.70997Z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="unstake-modal-content">
-                      <div className="unstake-modal-content-div-1">
-                        <div className="umc1">Stake:</div>
-                        <div className="umc2">
-                          <img src={stackingImg1} alt="" />
-                          {props.symbol}
-                        </div>
-                      </div>
-                      <div className="unstake-modal-content-div-2">
-                        <div className="umc3">{rangeValue}</div>
-                        <div className="umc4">~27670.00 USD</div>
-                      </div>
-                      <div className="unstake-modal-content-div-3">
-                        <div className="umc5">Balance: {mepadTokens}</div>
-                      </div>
-                      <div className="unstake-modal-content-div-4">
-                        <div className="umc6">
-                          <div>{rangeValue}</div>
-                          <Slider
-                            value={rangeValue}
-                            onChange={handleChange}
-                            aria-labelledby="continuous-slider"
-                            min={0.0}
-                            max={mepadTokens}
-                          />
-                        </div>
-                      </div>
-                      <div className="unstake-modal-content-div-5">
-                        <button
-                          onClick={() => setRangeValue(0.25 * mepadTokens)}
-                        >
-                          25%
-                        </button>
-                        <button
-                          onClick={() => setRangeValue(0.5 * mepadTokens)}
-                        >
-                          50%
-                        </button>
-                        <button
-                          onClick={() => setRangeValue(0.75 * mepadTokens)}
-                        >
-                          75%
-                        </button>
-                        <button onClick={() => setRangeValue(mepadTokens)}>
-                          MAX
-                        </button>
-                      </div>
-                      <div className="unstake-modal-content-div-6">
-                        <button
-                          disabled={rangeValue === 0 ? true : false}
-                          onClick={() => {
-                            dispatch(
-                              props.stakeMepad(String(rangeValue))
-                            );
+                            handleCloseStaking();
                           }}
                         >
                           Confirm
@@ -554,7 +414,11 @@ function StackingCard(props) {
             <div className="staking-card-sixth-div">
               <div className="staking-text-4">
                 <div>Total staked:</div>
-                <div>{Math.round(totalStakingTokens * 1000) / 1000}</div>
+                <div>
+                  {!props.disabled &&
+                    stakeDetails.totalStakingTokens > 0 &&
+                    fixDecimals(stakeDetails.totalStakingTokens, 3)}
+                </div>
               </div>
             </div>
 
@@ -562,7 +426,7 @@ function StackingCard(props) {
               <div className="staking-text-5">
                 <div>
                   <a
-                    href={props.contractAddress}
+                    href={stakeDetails.stakingUrl}
                     target="_blank"
                     rel="noreferrer"
                   >

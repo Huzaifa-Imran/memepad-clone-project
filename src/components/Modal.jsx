@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { disconnectWallet } from '../store/reducer/web3_reducer';
 import './Modal.css';
 import stackingImg1 from '../images/staking-card-1.jpg';
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 function ConnectModal(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { address, shortAddress, accountUrl } = useSelector((state) => state.web3);
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
@@ -91,7 +92,7 @@ function ConnectModal(props) {
           aria-describedby="transition-modal-description"
           className={classes.modal}
           open={props.show}
-          onClose={handleClose}
+          onClose={props.onClose}
           closeAfterTransition
           BackdropComponent={Backdrop}
           BackdropProps={{
@@ -111,9 +112,7 @@ function ConnectModal(props) {
                     className="ilhSnp  htanym"
                     aria-label="Close the dialog"
                     scale="md"
-                    onClick={() => {
-                      handleClose();
-                    }}
+                    onClick={props.onClose}
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -131,20 +130,20 @@ function ConnectModal(props) {
                     <div className="dmc1">Connected with MetaMask</div>
                     <div className="dmc2">
                       <img src={stackingImg1} alt="small icon" />
-                      <div>0xC530bb3F0e28...49DF</div>
+                      <div>{shortAddress}</div>
                     </div>
                     <div className="dmc3">
-                      <button className="mr-5" onClick={() => navigator.clipboard.writeText('something')}> <FaRegCopy className="mr-1" /> Copy Address</button>
+                      <button className="mr-5" onClick={() => navigator.clipboard.writeText(address)}> <FaRegCopy className="mr-1" /> Copy Address</button>
                       <div>
                         <RiShareBoxLine className='share-clr' />
-                        <a href="#" rel='noreferrer' target='_blank'>View on Bscscan Testnet</a>
+                        <a href={accountUrl} rel='noreferrer' target='_blank'>View on Bscscan</a>
                       </div>
                     </div>
                   </div>
                   <div className="disconnect-modal-content-div-2">
                     <button onClick={() => {
                       dispatch(disconnectWallet());
-                      handleClose();
+                      props.onClose();
                     }}>Logout</button>
                   </div>
                 </div>

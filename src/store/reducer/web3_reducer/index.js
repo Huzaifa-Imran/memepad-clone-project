@@ -2,8 +2,20 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
-import { initInfo } from "../staking_reducer";
-import memepad from "./memepad.json";
+import { initializeLaunches } from "../launch_reducer";
+import { initializeStaking } from "../staking_reducer";
+import memepad from "../launch_reducer/memepad.json";
+
+
+export const connectWallet = createAsyncThunk(
+  "ConnectWallet",
+  async (action, thunkAPI) => {
+    await thunkAPI.dispatch(initWeb3());
+    await thunkAPI.dispatch(fetchAccount());
+    thunkAPI.dispatch(initializeLaunches());
+    thunkAPI.dispatch(initializeStaking());
+  }
+);
 
 export const initWeb3 = createAsyncThunk(
   "InitWeb3",
@@ -68,7 +80,6 @@ export const initWeb3 = createAsyncThunk(
         }
       }
       const web3 = new Web3(provider);
-      thunkAPI.dispatch(initContract(web3));
 
       provider.on("accountsChanged", (accounts) => {
         thunkAPI.dispatch(fetchAccount());
@@ -76,7 +87,8 @@ export const initWeb3 = createAsyncThunk(
 
       // Subscribe to chainId change
       provider.on("chainChanged", (chainId) => {
-        thunkAPI.dispatch(initContract());
+        thunkAPI.dispatch(initializeStaking());
+        thunkAPI.dispatch(initializeLaunches());
       });
       return {
         web3,
@@ -92,12 +104,9 @@ export const fetchAccount = createAsyncThunk(
   "FetchAccount",
   async (action, thunkAPI) => {
     try {
-      let web3;
-      if (action) web3 = action;
-      else web3 = thunkAPI.getState().web3.web3;
+      const web3 = thunkAPI.getState().web3.web3;
       const address = (await web3.eth.getAccounts())[0];
       if (!address) throw "Account disconnected";
-      thunkAPI.dispatch(initInfo(address));
       return {
         address,
       };
@@ -108,91 +117,26 @@ export const fetchAccount = createAsyncThunk(
   }
 );
 
-export const initContract = createAsyncThunk(
-  "InitContract",
-  async (action, thunkAPI) => {
-    try {
-      let web3;
-      if (action) web3 = action;
-      else web3 = thunkAPI.getState().web3.web3;
-      const binanceChainId = memepad.network;
-      const chainId = await web3.eth.getChainId();
-      if (chainId !== binanceChainId)
-        // eslint-disable-next-line
-        throw "Please Connect to Binance Smart Chain";
-      const stakingContract = new web3.eth.Contract(
-        memepad.stakingAbi,
-        memepad.stakingAddress
-      );
-      const tokenContract = new web3.eth.Contract(
-        memepad.tokenAbi,
-        memepad.tokenAddress
-      );
-      // console.log(airdropContract);
-      thunkAPI.dispatch(fetchAccount(web3));
-      return {
-        stakingContract,
-        tokenContract,
-      };
-    } catch (error) {
-      console.log("Error initializing contract: ", error);
-      throw error;
-    }
-  }
-);
-
-export const approveTokens = createAsyncThunk(
-  "ApproveTokens",
-  async (action, thunkAPI) => {
-    try {
-      const { web3, tokenContract, address } = thunkAPI.getState().web3;
-      // let web = new Web3();
-      // web.utils.
-      const maxUint = web3.utils
-        .toBN(2)
-        .pow(web3.utils.toBN(256))
-        .sub(web3.utils.toBN(1));
-      const allowance = await tokenContract.methods
-        .allowance(address, memepad.stakingAddress)
-        .call();
-      if (allowance > Number(maxUint) / 10) return;
-      await tokenContract.methods
-        .approve(memepad.stakingAddress, maxUint)
-        .send({ from: address });
-    } catch (error) {
-      console.log("Error in loading info:", error);
-      throw error;
-    }
-  }
-);
-
 const web3Slice = createSlice({
   name: "Web3Reducer",
   initialState: {
     web3: null,
-    stakingContract: null,
-    tokenContract: null,
     address: null,
     shortAddress: null,
     connected: false,
     accountUrl: "#",
-    stakingUrl: "#",
-    tokenUrl: "#",
   },
   reducers: {
     disconnectWallet: (state) => {
       state.connected = false;
-      state.enabled = false;
     },
   },
   extraReducers: {
+    [connectWallet.rejected]: (state) => {
+      state.connected = false;
+    },
     [initWeb3.fulfilled]: (state, action) => {
       state.web3 = action.payload.web3;
-    },
-    [initContract.fulfilled]: (state, action) => {
-      state.stakingContract = action.payload.stakingContract;
-      state.tokenContract = action.payload.tokenContract;
-      state.enabled = false;
     },
     [fetchAccount.fulfilled]: (state, action) => {
       state.address = action.payload.address;
@@ -200,30 +144,11 @@ const web3Slice = createSlice({
         action.payload.address.slice(0, 6) +
         "..." +
         action.payload.address.slice(38, 42);
-      state.accountUrl =
-        "https://testnet.bscscan.com/address/" + action.payload.address;
-      state.stakingUrl =
-        "https://testnet.bscscan.com/address/" +
-        memepad.stakingAddress +
-        "#code";
-      state.tokenUrl =
-        "https://testnet.bscscan.com/address/" + memepad.tokenAddress + "#code";
+      state.accountUrl = memepad.prefix + action.payload.address;
       state.connected = true;
-      state.enabled = false;
-    },
-    [initContract.rejected]: (state) => {
-      state.connected = false;
-      state.enabled = false;
     },
     [fetchAccount.rejected]: (state) => {
       state.connected = false;
-      state.enabled = false;
-    },
-    [approveTokens.fulfilled]: (state, action) => {
-      state.enabled = true;
-    },
-    [approveTokens.rejected]: (state, action) => {
-      state.enabled = false;
     },
   },
 });

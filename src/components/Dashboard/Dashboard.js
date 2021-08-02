@@ -9,7 +9,7 @@ import CardDetails from "../../components/CardDetails/CardDetails";
 import TermsAndCondition from "../../components/TermsAndCondition/TermsAndCondition";
 import PrivacyPolicy from "../../components/PrivacyPolicy/PrivacyPolicy";
 import { useDispatch, useSelector } from "react-redux";
-import { initWeb3 } from "../../store/reducer/web3_reducer";
+import { connectWallet, initWeb3 } from "../../store/reducer/web3_reducer";
 import ConnectModal from "../../components/Modal";
 import '../../UpdatedSidebar.css';
 import logo from '../../images/mempad-logo.svg';
@@ -53,7 +53,7 @@ function Dashboard(props) {
                         <span className={`Hamburger_dash__20BhT ${!showSidebar && "hamburger-last-child"}`}></span>
                     </button>
                     <div className='header-logo-container'>
-                        <a href="/"><img src={logo} class="Header_logo__3_D65" alt="logo" /></a>
+                        <a href="/"><img src={logo} className="Header_logo__3_D65" alt="logo" /></a>
                     </div>
                     <strong className="Header_title__2eSkT">{title}</strong>
                     <div className="Header_wallet__1DOlJ">
@@ -64,7 +64,7 @@ function Dashboard(props) {
                                         setModalShow(true);
                                     }
                                     : () => {
-                                        dispatch(initWeb3());
+                                        dispatch(connectWallet());
                                     }
                             }
                             className="user-btn"
@@ -80,14 +80,14 @@ function Dashboard(props) {
                         </Route>
                         <Route path="/dashboard/staking" exact component={Staking} />
                         <Route path="/dashboard/projects" exact component={Projects} />
-                        <Route path="/dashboard/projects/details" exact component={CardDetails} />
+                        <Route path="/dashboard/projects/:projId" exact component={CardDetails} />
                         <Route path="/dashboard/terms" exact component={TermsAndCondition} />
                         <Route path="/dashboard/privacy" exact component={PrivacyPolicy} />
                     </Switch>
                 </div>
                 <Footer />
             </div>
-            <ConnectModal show={modalShow} onHide={() => setModalShow(false)} />
+            <ConnectModal show={modalShow} onClose={() => setModalShow(false)} />
         </div>
     )
 }
