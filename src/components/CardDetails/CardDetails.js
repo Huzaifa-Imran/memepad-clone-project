@@ -295,7 +295,7 @@ function CardDetails(props) {
 
 
 
-                  <div class="percentage-remaining-bnb-main">
+                  <div class="percentage-remaining-bnb-main mt-3">
                     <div class="percentage-remaining-bnb-left">
                       {fixDecimals(
                         (projectDetails.soldAmount * 100) /
