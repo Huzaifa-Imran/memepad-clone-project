@@ -1,12 +1,12 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import { useDispatch, useSelector } from 'react-redux';
-import { disconnectWallet } from '../store/reducer/web3_reducer';
-import './Modal.css';
-import stackingImg1 from '../images/staking-card-1.jpg';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import { useDispatch, useSelector } from "react-redux";
+import { disconnectWallet } from "../store/reducer/web3_reducer";
+import "./Modal.css";
+import stackingImg1 from "../images/staking-card-1.jpg";
 import { RiShareBoxLine } from "react-icons/ri";
 import { IoMdCopy } from "react-icons/io";
 import { GrShare } from "react-icons/gr";
@@ -14,29 +14,40 @@ import { FaRegCopy } from "react-icons/fa";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    border: "2px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(6, 8, 2),
   },
   paper_heading: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   paper_subheading: {
-    fontSize: '14px',
+    fontSize: "14px",
   },
 }));
 
 function ConnectModal(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { address, shortAddress, accountUrl } = useSelector((state) => state.web3);
-  const [open, setOpen] = React.useState(false);
+  const { address, shortAddress, accountUrl } = useSelector(
+    (state) => state.web3
+  );
+  const [open, setOpen] = useState(false);
+  const [copy, setCopy] = useState(false);
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(address);
+    setCopy(true);
+    setTimeout(() => {
+      setCopy(false);
+    }, 3000);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -45,7 +56,6 @@ function ConnectModal(props) {
   const handleClose = () => {
     setOpen(false);
   };
-
 
   return (
     <div>
@@ -84,8 +94,6 @@ function ConnectModal(props) {
         </Fade>
       </Modal> */}
 
-
-
       <div className="disconnect-modal">
         <Modal
           aria-labelledby="transition-modal-title"
@@ -100,13 +108,11 @@ function ConnectModal(props) {
           }}
         >
           <Fade in={props.show}>
-            <div className=''>
+            <div className="">
               <div className="disconnect-inner-modal-main">
                 <div className="jSaCuW-dis">
                   <div className="kNJaHk fdgtVi">
-                    <h2 className="dRvZwz">
-                      Stake in Pool
-                    </h2>
+                    <h2 className="dRvZwz">Stake in Pool</h2>
                   </div>
                   <button
                     className="ilhSnp  htanym"
@@ -133,23 +139,36 @@ function ConnectModal(props) {
                       <div>{shortAddress}</div>
                     </div>
                     <div className="dmc3">
-                      <button className="mr-5" onClick={() => navigator.clipboard.writeText(address)}> <FaRegCopy className="mr-1" /> Copy Address</button>
+                      <button
+                        title="Copy Address to Clipboard"
+                        className="mr-5"
+                        onClick={copy ? null : copyAddress}
+                      >
+                        {" "}
+                        <FaRegCopy className="mr-1" />
+                        {copy ? "Copied" : "Copy Address"}
+                      </button>
                       <div>
-                        <RiShareBoxLine className='share-clr' />
-                        <a href={accountUrl} rel='noreferrer' target='_blank'>View on Bscscan</a>
+                        <RiShareBoxLine className="share-clr" />
+                        <a href={accountUrl} rel="noreferrer" target="_blank">
+                          View on Bscscan
+                        </a>
                       </div>
                     </div>
                   </div>
                   <div className="disconnect-modal-content-div-2">
-                    <button onClick={() => {
-                      dispatch(disconnectWallet());
-                      props.onClose();
-                    }}>Logout</button>
+                    <button
+                      onClick={() => {
+                        dispatch(disconnectWallet());
+                        props.onClose();
+                      }}
+                    >
+                      Logout
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-
           </Fade>
         </Modal>
       </div>

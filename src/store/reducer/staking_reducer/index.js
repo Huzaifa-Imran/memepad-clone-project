@@ -11,10 +11,10 @@ export const initializeStaking = createAsyncThunk(
       memepad.mepadTokenAbi,
       memepad.mepadTokenAddress
     );
-    const decimals = Number(
-      await mepadTokenContract.methods.decimals().call()
+    const decimals = Number(await mepadTokenContract.methods.decimals().call());
+    thunkAPI.dispatch(
+      stakingSlice.actions.setMepadToken({ mepadTokenContract, decimals })
     );
-    thunkAPI.dispatch(stakingSlice.actions.setMepadToken({mepadTokenContract, decimals}));
     for (let i = 0; i < stakeIds.length; ++i) {
       thunkAPI.dispatch(initStake(stakeIds[i]));
     }
@@ -84,8 +84,7 @@ export const loadStakingInfo = createAsyncThunk(
     try {
       const { address } = thunkAPI.getState().web3;
       const { mepadTokenContract, decimals } = thunkAPI.getState().staking;
-      const { stakingContract } =
-        thunkAPI.getState().staking[action];
+      const { stakingContract } = thunkAPI.getState().staking[action];
       const removeDecimals = (val) => {
         return Number(val) / 10 ** decimals;
       };
@@ -95,8 +94,8 @@ export const loadStakingInfo = createAsyncThunk(
         stakingContract.methods.pendingReward(address).call(),
         stakingContract.methods.totalStakingTokens().call(),
         mepadTokenContract.methods
-        .allowance(address, memepad[action].stakingAddress)
-        .call(),
+          .allowance(address, memepad[action].stakingAddress)
+          .call(),
       ]);
       return {
         pendingReward: removeDecimals(responses[2]),
@@ -121,9 +120,14 @@ export const withdrawAndCollectReward = createAsyncThunk(
       const { stakingContract } = thunkAPI.getState().staking[action.id];
       const { decimals } = thunkAPI.getState().staking;
       await stakingContract.methods
-        .withdraw(Web3.utils.toBN(action.amount * (10 ** decimals)))
+        .withdraw(
+          (action.amount * 10 ** decimals).toLocaleString("fullwide", {
+            useGrouping: false,
+            maximumFractionDigits: 20,
+          })
+        )
         .send({ from: address });
-      thunkAPI.dispatch(loadStakingInfo());
+      thunkAPI.dispatch(loadStakingInfo(action.id));
     } catch (error) {
       console.log("Cant Withdraw MEPAD: ", error);
     }
@@ -138,16 +142,19 @@ export const stakeMepad = createAsyncThunk(
       const { stakingContract } = thunkAPI.getState().staking[action.id];
       const { decimals } = thunkAPI.getState().staking;
       await stakingContract.methods
-        .deposit(action.amount * (10 ** decimals))
+        .deposit(
+          (action.amount * 10 ** decimals).toLocaleString("fullwide", {
+            useGrouping: false,
+            maximumFractionDigits: 20,
+          })
+        )
         .send({ from: address });
-      thunkAPI.dispatch(loadStakingInfo());
+      thunkAPI.dispatch(loadStakingInfo(action.id));
     } catch (error) {
       console.log("Cant Stake MEPAD: ", error);
     }
   }
 );
-
-
 
 export const approveMepadTokens = createAsyncThunk(
   "ApproveMEPADTokens",
@@ -162,7 +169,7 @@ export const approveMepadTokens = createAsyncThunk(
       await mepadTokenContract.methods
         .approve(memepad[action].stakingAddress, maxUint)
         .send({ from: address });
-        thunkAPI.dispatch(loadStakingInfo(action));
+      thunkAPI.dispatch(loadStakingInfo(action));
     } catch (error) {
       console.log("Error in loading info:", error);
       throw error;
@@ -177,7 +184,7 @@ const stakingSlice = createSlice({
     setMepadToken: (state, action) => {
       state.mepadTokenContract = action.payload.mepadTokenContract;
       state.decimals = action.payload.decimals;
-    } 
+    },
   },
   extraReducers: {
     [initStakingContract.fulfilled]: (state, action) => {
@@ -220,5 +227,4 @@ const stakingSlice = createSlice({
 });
 
 export const stakingReducer = stakingSlice.reducer;
-// export const { setStake, setUnstake, setHarvest, setCompound, changeAmount } =
-//   stakeSlice.actions;
+export const { setMepadToken } = stakingSlice.actions;

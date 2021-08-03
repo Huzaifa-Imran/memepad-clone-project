@@ -10,6 +10,7 @@ import {
   withdrawAndCollectReward,
 } from "../../store/reducer/staking_reducer";
 import "./Staking.css";
+import { stakeIds } from "../../store/reducer/staking_reducer/stakingInitialStates";
 
 function Staking() {
   const [switchBtnToggle, setSwitchBtnToggle] = useState(true);
@@ -20,7 +21,9 @@ function Staking() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (connected) {
-        dispatch(loadStakingInfo("mepad"));
+        for (let i = 0; i < stakeIds.length; ++i) {
+          dispatch(loadStakingInfo(stakeIds[i]));
+        }
       }
     }, 10000);
     return () => {

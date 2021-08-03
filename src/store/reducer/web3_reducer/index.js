@@ -87,6 +87,7 @@ export const initWeb3 = createAsyncThunk(
 
       // Subscribe to chainId change
       provider.on("chainChanged", (chainId) => {
+        if(chainId != memepad.network) thunkAPI.dispatch(disconnectWallet());
         thunkAPI.dispatch(initializeStaking());
         thunkAPI.dispatch(initializeLaunches());
       });

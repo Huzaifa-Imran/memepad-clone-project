@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { connectWallet } from "../../store/reducer/web3_reducer";
 import { FaRegCopy } from "react-icons/fa";
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 const smallRedirects = [
   {
@@ -52,6 +52,15 @@ function CardDetails(props) {
   const [timerMinutes, setTimerMinutes] = useState("00");
   const [timerSeconds, setTimerSeconds] = useState("00");
   const [distance, setDistance] = useState(0);
+  const [copy, setCopy] = useState(false);
+
+  const copyAddress = () => {
+    navigator.clipboard.writeText(projectDetails.address);
+    setCopy(true);
+    setTimeout(() => {
+      setCopy(false);
+    }, 3000);
+  };
 
   let interval = useRef();
   const startTimer = () => {
@@ -91,15 +100,13 @@ function CardDetails(props) {
   const fixDecimals = (val, dec) => {
     if (!val) return 0;
     const decimals = String(val).split(".")[1];
-    if (decimals && decimals.length > dec)
-      return Number(val.toFixed(dec));
+    if (decimals && decimals.length > dec) return Number(val.toFixed(dec));
     return Number(val);
   };
 
-  const now = (projectDetails.soldAmount / projectDetails.totalRewardTokens) * 100;
-  const progressInstance = (
-    <ProgressBar now={now} label={`${now}%`} srOnly />
-  );
+  const now =
+    (projectDetails.soldAmount / projectDetails.totalRewardTokens) * 100;
+  const progressInstance = <ProgressBar now={now} label={`${now}%`} srOnly />;
 
   return (
     <Container fluid>
@@ -148,14 +155,12 @@ function CardDetails(props) {
         </Col>
       </Row>
       <Row>
-        <Col lg={8} md={12} sm={12} className=''>
+        <Col lg={8} md={12} sm={12} className="">
           <div className="details-second-left-div">
             <img src={projectDetails.image} alt="" />
             <div className="pool-about-content">
               <h3 class="pool-about-heading">Project Overview</h3>
-              <div class="pool-about-text">
-                {projectDetails.description}
-              </div>
+              <div class="pool-about-text">{projectDetails.description}</div>
               <div class="pool-about-separator"></div>
               <h3 class="pool-about-heading">Pool Detail</h3>
               <div class="pool-about-sale">
@@ -163,8 +168,8 @@ function CardDetails(props) {
                 {projectDetails.isFinished
                   ? "Sale Finished"
                   : !distance
-                    ? "Live Now"
-                    : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
+                  ? "Live Now"
+                  : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
               </div>
 
               <div class="pool-about-row">
@@ -198,10 +203,7 @@ function CardDetails(props) {
                       <div class="pool-about-dataLabel">
                         Available for Purchase
                       </div>
-                      <div
-                        title="250,000,000,000,000.00 RHINO"
-                        class="pool-about-dataValue"
-                      >
+                      <div class="pool-about-dataValue">
                         {fixDecimals(projectDetails.totalRewardTokens, 2)}{" "}
                         {projectDetails.symbol}
                       </div>
@@ -237,9 +239,19 @@ function CardDetails(props) {
                     </li>
                     <li class="pool-about-dataListItem">
                       <div class="pool-about-dataLabel">Address</div>
-                      <div class="pool-about-dataValue">
+                      <div
+                        title={projectDetails.address}
+                        class="pool-about-dataValue"
+                      >
                         {projectDetails.address}
-                        <button onClick={() => { navigator.clipboard.writeText(projectDetails.address) }} className='address-copy-btn'><FaRegCopy /></button>
+                        <button
+                          title="Copy Address to Clipboard"
+                          onClick={copy ? null : copyAddress}
+                          className="address-copy-btn"
+                        >
+                          <FaRegCopy />
+                          {copy ? "Copied" : ""}
+                        </button>
                       </div>
                     </li>
                     <li class="pool-about-dataListItem">
@@ -266,15 +278,15 @@ function CardDetails(props) {
             </div>
           </div>
         </Col>
-        <Col lg={4} md={12} sm={12} className=''>
+        <Col lg={4} md={12} sm={12} className="">
           <div className="details-second-right-div">
             <div className="sale-card">
               <h2>
                 {projectDetails.isFinished
                   ? "Sale Ended"
                   : distance
-                    ? "Sale Countdown"
-                    : "Sale Live NOW"}
+                  ? "Sale Countdown"
+                  : "Sale Live NOW"}
               </h2>
               {!distance ? (
                 <div>
@@ -282,25 +294,25 @@ function CardDetails(props) {
                     <div class="launch-icon">
                       <img src={projectDetails.smallImage} alt="launch" />
                     </div>
-                    {((projectDetails.soldAmount /
-                      projectDetails.totalRewardTokens) *
-                      100).toFixed(0)}
+                    {fixDecimals(
+                      (projectDetails.soldAmount /
+                        projectDetails.totalRewardTokens) *
+                        100,
+                      0
+                    )}
                     % {projectDetails.symbol} Sold
                     <div className="count-progress-bar">
                       {/* <div className="count-progress-bar-filter"></div> */}
-                    <div>{progressInstance}</div>
+                      <div>{progressInstance}</div>
                     </div>
                   </h1>
-
-
-
 
                   <div class="percentage-remaining-bnb-main mt-2">
                     <div class="percentage-remaining-bnb-left">
                       {fixDecimals(
                         (projectDetails.soldAmount * 100) /
-                        projectDetails.totalRewardTokens,
-                        2
+                          projectDetails.totalRewardTokens,
+                        0
                       )}
                       %
                     </div>
@@ -309,13 +321,6 @@ function CardDetails(props) {
                       ${fixDecimals(projectDetails.totalTokensInBnb, 2)} BNB`}
                     </div>
                   </div>
-
-
-
-
-
-
-
                 </div>
               ) : (
                 <div className="countdown-progress">
