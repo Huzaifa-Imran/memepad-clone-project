@@ -209,7 +209,7 @@
   background: linear-gradient(rgb(36, 153, 248), rgb(7, 125, 215));
   -webkit-appearance: button;
   border-radius: 5px !important;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   border: none;
   color: #fff;
@@ -445,11 +445,11 @@
 
 .percentage-remaining-bnb-left {
   font-family: Rubik, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   font-stretch: normal;
   font-style: normal;
-  line-height: 1.2;
+  line-height: 1;
   letter-spacing: normal;
   text-align: left;
   text-overflow: ellipsis;
@@ -461,13 +461,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 60%;
-  color: #22282a;
+  color: #838792;
   text-align: right;
   font-family: Rubik, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-stretch: normal;
   font-style: normal;
-  line-height: 1.2;
+  line-height: 1;
   letter-spacing: normal;
 }
 

@@ -368,7 +368,7 @@ function CardDetails(props) {
                 </div>
               </section>
               <section className="btn-container">
-                {!connected ? (
+                {connected ? (
                   <div>
                     <div className="info-row mt-3">
                       <p>My Allocation</p>
