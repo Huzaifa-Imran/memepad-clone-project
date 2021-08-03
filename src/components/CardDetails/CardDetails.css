@@ -406,7 +406,7 @@
 
 .pool-about-dataLabel {
   font-family: Rubik, sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 400;
   font-stretch: normal;
   font-style: normal;
@@ -425,9 +425,57 @@
   color: #22282a;
   text-align: right;
   font-family: Rubik, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+
+.percentage-remaining-bnb-main {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+.percentage-remaining-bnb-left {
+  font-family: Rubik, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-align: left;
+  text-overflow: ellipsis;
+  color: #838792;
+  min-width: 105px;
+}
+
+.percentage-remaining-bnb-right {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+  color: #22282a;
+  text-align: right;
+  font-family: Rubik, sans-serif;
   font-size: 11px;
   font-stretch: normal;
   font-style: normal;
   line-height: 1.2;
   letter-spacing: normal;
+}
+
+.address-copy-btn{
+  background: none;
+  border: 0;
+  transition: all 0.15s ease-in;
+}
+
+.address-copy-btn:hover{
+  opacity: 0.6;
 }

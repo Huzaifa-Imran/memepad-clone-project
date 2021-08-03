@@ -13,6 +13,7 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Slider from "@material-ui/core/Slider";
+import CountUp from 'react-countup';
 import {
   approveMepadTokens,
   stakeMepad,
@@ -69,6 +70,9 @@ function StackingCard(props) {
     2
   );
 
+
+
+
   const modalValues =
     showStakingModal === "Stake" ? mepadTokens : stakeDetails.stakedAmount;
 
@@ -98,7 +102,17 @@ function StackingCard(props) {
         <div className="staking-card-second-div">
           <div className="staking-text-2">
             <div>APY:</div>
-            <div>{!props.disabled && APR > 0 && `${APR}%`}</div>
+
+            <div className={`staking-text-4-last-child ${APR === 0 && "staking-text-2-last-child-non-valued"}`}>
+              {/* {!props.disabled && APR > 0 && `${APR}%`} */}
+              <span className={`${APR === 0 && "d-none"}`}>
+                <CountUp duration={2}
+                  end={APR}
+                />%
+              </span>
+            </div>
+
+
           </div>
         </div>
 
@@ -112,11 +126,14 @@ function StackingCard(props) {
                     <div>{fixDecimals(stakeDetails.pendingReward, 3)}</div>
                     <div>~27.693.56 USD</div>
                   </div>
-                  <div>
+                  <div className='staking-collect-btn'>
                     <button
-                      disabled={
-                        fixDecimals(stakeDetails.pendingReward, 0) === 0
-                      }
+                      // disabled={
+                      //   fixDecimals(stakeDetails.pendingReward, 0) === 0
+                      // }
+
+                      disabled={fixDecimals(stakeDetails.pendingReward, 0) === 0 ? true : false}
+
                       onClick={() => {
                         setShowCollectModal(true);
                       }}
@@ -177,11 +194,11 @@ function StackingCard(props) {
                 onClick={
                   connected
                     ? () => {
-                        dispatch(approveMepadTokens(props.stakeId));
-                      }
+                      dispatch(approveMepadTokens(props.stakeId));
+                    }
                     : () => {
-                        dispatch(connectWallet());
-                      }
+                      dispatch(connectWallet());
+                    }
                 }
               >
                 {connected ? "Enable" : "Unlock Wallet"}
@@ -361,13 +378,13 @@ function StackingCard(props) {
                             dispatch(
                               showStakingModal == "Stake"
                                 ? withdrawAndCollectReward({
-                                    amount: String(rangeValue),
-                                    id: props.stakeId,
-                                  })
+                                  amount: String(rangeValue),
+                                  id: props.stakeId,
+                                })
                                 : stakeMepad({
-                                    amount: String(rangeValue),
-                                    id: props.stakeId,
-                                  })
+                                  amount: String(rangeValue),
+                                  id: props.stakeId,
+                                })
                             );
                             handleCloseStaking();
                           }}
@@ -414,10 +431,19 @@ function StackingCard(props) {
             <div className="staking-card-sixth-div">
               <div className="staking-text-4">
                 <div>Total staked:</div>
-                <div>
+                <div className={`staking-text-4-last-child ${stakeDetails.totalStakingTokens === 0 && "staking-text-4-last-child-non-valued"}`}>
                   {!props.disabled &&
-                    stakeDetails.totalStakingTokens > 0 &&
-                    fixDecimals(stakeDetails.totalStakingTokens, 3)}
+                    <>
+                      {/* stakeDetails.totalStakingTokens > 0 &&
+                    fixDecimals(stakeDetails.totalStakingTokens, 3) */}
+                      <span className={`${stakeDetails.totalStakingTokens === 0 && "d-none"}`}>
+                        <CountUp duration={6.75}
+                          end={stakeDetails.totalStakingTokens > 0 &&
+                            fixDecimals(stakeDetails.totalStakingTokens, 3)}
+                        />
+                      </span>
+                    </>
+                  }
                 </div>
               </div>
             </div>

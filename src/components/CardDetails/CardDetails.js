@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { connectWallet } from "../../store/reducer/web3_reducer";
+import { FaRegCopy } from "react-icons/fa";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const smallRedirects = [
   {
@@ -94,6 +96,11 @@ function CardDetails(props) {
     return Number(val);
   };
 
+  const now = (projectDetails.soldAmount / projectDetails.totalRewardTokens) * 100;
+  const progressInstance = (
+    <ProgressBar now={now} label={`${now}%`} srOnly />
+  );
+
   return (
     <Container fluid>
       <Row>
@@ -141,7 +148,7 @@ function CardDetails(props) {
         </Col>
       </Row>
       <Row>
-        <Col lg={7} md={12}>
+        <Col lg={8} md={12} sm={12} className=''>
           <div className="details-second-left-div">
             <img src={projectDetails.image} alt="" />
             <div className="pool-about-content">
@@ -156,8 +163,8 @@ function CardDetails(props) {
                 {projectDetails.isFinished
                   ? "Sale Finished"
                   : !distance
-                  ? "Live Now"
-                  : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
+                    ? "Live Now"
+                    : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
               </div>
 
               <div class="pool-about-row">
@@ -232,6 +239,7 @@ function CardDetails(props) {
                       <div class="pool-about-dataLabel">Address</div>
                       <div class="pool-about-dataValue">
                         {projectDetails.address}
+                        <button onClick={() => { navigator.clipboard.writeText(projectDetails.address) }} className='address-copy-btn'><FaRegCopy /></button>
                       </div>
                     </li>
                     <li class="pool-about-dataListItem">
@@ -258,44 +266,56 @@ function CardDetails(props) {
             </div>
           </div>
         </Col>
-        <Col lg={5} md={12} sm={12}>
+        <Col lg={4} md={12} sm={12} className=''>
           <div className="details-second-right-div">
             <div className="sale-card">
               <h2>
                 {projectDetails.isFinished
                   ? "Sale Ended"
                   : distance
-                  ? "Sale Countdown"
-                  : "Sale Live NOW"}
+                    ? "Sale Countdown"
+                    : "Sale Live NOW"}
               </h2>
               {!distance ? (
                 <div>
                   <h1 className="when-zero">
                     <div class="launch-icon">
-                      <img src={projectDetails.smallImage} alt="" />
+                      <img src={projectDetails.smallImage} alt="launch" />
                     </div>
                     {((projectDetails.soldAmount /
                       projectDetails.totalRewardTokens) *
                       100).toFixed(0)}
                     % {projectDetails.symbol} Sold
                     <div className="count-progress-bar">
-                      <div className="count-progress-bar-filter"></div>
+                      {/* <div className="count-progress-bar-filter"></div> */}
+                    <div>{progressInstance}</div>
                     </div>
                   </h1>
-                  <div class="pool-about-dataLabel">
-                    <p>
+
+
+
+
+                  <div class="percentage-remaining-bnb-main">
+                    <div class="percentage-remaining-bnb-left">
                       {fixDecimals(
                         (projectDetails.soldAmount * 100) /
-                          projectDetails.totalRewardTokens,
+                        projectDetails.totalRewardTokens,
                         2
                       )}
                       %
-                    </p>
-                    <p>
+                    </div>
+                    <div class="percentage-remaining-bnb-right">
                       {`${fixDecimals(projectDetails.soldAmountInBnb, 2)} / 
                       ${fixDecimals(projectDetails.totalTokensInBnb, 2)} BNB`}
-                    </p>
+                    </div>
                   </div>
+
+
+
+
+
+
+
                 </div>
               ) : (
                 <div className="countdown-progress">

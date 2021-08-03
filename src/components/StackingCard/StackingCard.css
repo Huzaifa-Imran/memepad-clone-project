@@ -158,14 +158,13 @@
   color: #22282a;
 }
 
-.staking-text-2 div:last-child {
+.staking-text-2-last-child-non-valued {
   min-height: 20px;
   display: block;
   background-color: rgb(233, 234, 235);
   border-radius: 4px;
   width: 79px;
   height: 25px;
-
   animation: 2s ease-out 0s infinite normal none running anim;
   transform: translate3d(0px, 0px, 0px);
 }
@@ -311,14 +310,14 @@
   font-family: Rubik, sans-serif;
 }
 
-.staking-text-4 div:last-child {
+.staking-text-4-last-child {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
 }
 
-.staking-text-4 div:last-child {
+.staking-text-4-last-child-non-valued{
   min-height: 20px;
   display: block;
   background-color: rgb(233, 234, 235);
@@ -423,7 +422,6 @@
   align-items: center;
   justify-content: space-between;
 }
-
 
 .staking-num-and-btns-top div:first-child div:first-child {
   color: #6c5cb6;
@@ -680,8 +678,6 @@
   opacity: 0.65;
 }
 
-
-
 @media (min-width: 370px) {
   .unstake-OndnD {
     width: auto;
@@ -773,7 +769,7 @@
   flex-shrink: 0;
 }
 
-.unstake-modal-content{
+.unstake-modal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -782,7 +778,7 @@
   width: 100%;
 }
 
-.unstake-modal-content-div-1{
+.unstake-modal-content-div-1 {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -790,19 +786,19 @@
   width: 100%;
 }
 
-.umc1{
+.umc1 {
   font-size: 20px;
   font-family: Rubik, sans-serif;
   font-weight: 600;
 }
-.umc2{
+.umc2 {
   font-size: 20px;
   font-family: Rubik, sans-serif;
   font-weight: 600;
   color: rgb(40, 13, 95);
 }
 
-.umc2 img{
+.umc2 img {
   border-radius: 50%;
   height: 20px;
   width: 20px;
@@ -810,7 +806,7 @@
   margin-right: 5px;
 }
 
-.unstake-modal-content-div-2{
+.unstake-modal-content-div-2 {
   background-color: #f8f5f5;
   width: 100%;
   margin-top: 15px;
@@ -818,37 +814,37 @@
   padding: 20px;
 }
 
-.umc3{
+.umc3 {
   font-size: 22px;
   font-family: Rubik, sans-serif;
   font-weight: 600;
 }
 
-.umc4{
+.umc4 {
   font-size: 15px;
   font-family: Rubik, sans-serif;
   font-weight: 400;
   color: #7c7a7a;
 }
 
-.unstake-modal-content-div-3{
+.unstake-modal-content-div-3 {
   width: 100%;
   margin-top: 15px;
 }
 
-.umc5{
+.umc5 {
   color: #7c7a7a;
   font-size: 15px;
   font-family: Rubik, sans-serif;
   font-weight: 400;
 }
 
-.unstake-modal-content-div-4{
+.unstake-modal-content-div-4 {
   width: 100%;
   margin-top: 15px;
 }
 
-.umc6 div:first-child{
+.umc6 div:first-child {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -856,12 +852,11 @@
   justify-content: flex-end;
 }
 
-.umc6 input{
+.umc6 input {
   width: 100%;
 }
 
-
-.unstake-modal-content-div-5{
+.unstake-modal-content-div-5 {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -881,7 +876,7 @@
   font-weight: 500;
 }
 
-.unstake-modal-content-div-6{
+.unstake-modal-content-div-6 {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -890,7 +885,7 @@
   margin-top: 15px;
 }
 
-.unstake-modal-content-div-6 button{
+.unstake-modal-content-div-6 button {
   width: 100%;
   background-image: linear-gradient(0deg, #0078ff, #4ca4f3);
   color: #fff;
@@ -906,11 +901,11 @@
   font-family: Rubik, sans-serif;
 }
 
-.unstake-modal-content-div-6 button:hover{
+.unstake-modal-content-div-6 button:hover {
   opacity: 0.85;
 }
 
-.unstake-modal-content-div-6 button:disabled{
+.unstake-modal-content-div-6 button:disabled {
   background-color: #838792;
   color: #fff;
 }
@@ -932,17 +927,44 @@
   font-family: Rubik, sans-serif;
 } */
 
-.unstake-modal-content-div-6 button[disabled]:active, .unstake-modal-content-div-6 button[disabled],
+.unstake-modal-content-div-6 button[disabled]:active,
+.unstake-modal-content-div-6 button[disabled],
 input[type="button"][disabled]:active,
 input[type="button"][disabled],
 input[type="submit"][disabled]:active,
-input[type="submit"][disabled] ,
+input[type="submit"][disabled],
 .unstake-modal-content-div-6 button[disabled]:hover,
 input[type="button"][disabled]:hover,
-input[type="submit"][disabled]:hover
-{
-  
+input[type="submit"][disabled]:hover {
   cursor: not-allowed;
   background: #838792;
   opacity: 1;
+}
+
+.staking-collect-btn button[disabled]:active,
+.staking-collect-btn button[disabled],
+input[type="button"][disabled]:active,
+input[type="button"][disabled],
+input[type="submit"][disabled]:active,
+input[type="submit"][disabled],
+.unstake-modal-content-div-6 button[disabled]:hover,
+input[type="button"][disabled]:hover,
+input[type="submit"][disabled]:hover {
+  cursor: not-allowed !important;
+  background: #838792 !important;
+  opacity: 1 !important;
+}
+
+.staking-card-fourth-div .staking-btn button[disabled]:active,
+.staking-card-fourth-div .staking-btn button[disabled],
+input[type="button"][disabled]:active,
+input[type="button"][disabled],
+input[type="submit"][disabled]:active,
+input[type="submit"][disabled],
+.unstake-modal-content-div-6 button[disabled]:hover,
+input[type="button"][disabled]:hover,
+input[type="submit"][disabled]:hover {
+  cursor: not-allowed !important;
+  background: #838792 !important;
+  opacity: 1 !important;
 }

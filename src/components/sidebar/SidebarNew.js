@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import './SidebarNew.css';
 import logo from '../../images/mempad-logo.svg';
 import { NavLink, useHistory, useParams } from 'react-router-dom';
 
 function SidebarNew(props) {
 
-   
+
 
     useEffect(() => {
     }, [])
