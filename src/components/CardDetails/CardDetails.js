@@ -295,7 +295,7 @@ function CardDetails(props) {
 
 
 
-                  <div class="percentage-remaining-bnb-main mt-3">
+                  <div class="percentage-remaining-bnb-main mt-2">
                     <div class="percentage-remaining-bnb-left">
                       {fixDecimals(
                         (projectDetails.soldAmount * 100) /
@@ -352,7 +352,7 @@ function CardDetails(props) {
                     <br /> BNB
                   </p>
                 </div>
-                <div className="info-row">
+                <div className="info-row mt-2">
                   <p>
                     {projectDetails.symbol} <br /> Sold:
                   </p>
@@ -360,7 +360,7 @@ function CardDetails(props) {
                     {projectDetails.soldAmount} {projectDetails.symbol}
                   </p>
                 </div>
-                <div className="info-row">
+                <div className="info-row mt-2">
                   <p>Total Raise</p>
                   <p>
                     {Number(projectDetails.totalTokensInBnb).toFixed(0)} BNB
@@ -370,7 +370,7 @@ function CardDetails(props) {
               <section className="btn-container">
                 {connected ? (
                   <div>
-                    <div className="info-row">
+                    <div className="info-row mt-2">
                       <p>My Allocation</p>
                       <p>{projectDetails.myAllocation} BNB</p>
                     </div>
