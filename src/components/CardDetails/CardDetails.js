@@ -352,7 +352,7 @@ function CardDetails(props) {
                     <br /> BNB
                   </p>
                 </div>
-                <div className="info-row mt-2">
+                <div className="info-row mt-3">
                   <p>
                     {projectDetails.symbol} <br /> Sold:
                   </p>
@@ -360,7 +360,7 @@ function CardDetails(props) {
                     {projectDetails.soldAmount} {projectDetails.symbol}
                   </p>
                 </div>
-                <div className="info-row mt-2">
+                <div className="info-row mt-3">
                   <p>Total Raise</p>
                   <p>
                     {Number(projectDetails.totalTokensInBnb).toFixed(0)} BNB
@@ -368,13 +368,13 @@ function CardDetails(props) {
                 </div>
               </section>
               <section className="btn-container">
-                {connected ? (
+                {!connected ? (
                   <div>
-                    <div className="info-row mt-2">
+                    <div className="info-row mt-3">
                       <p>My Allocation</p>
                       <p>{projectDetails.myAllocation} BNB</p>
                     </div>
-                    <div className="info-row">
+                    <div className="info-row mt-3">
                       <p>Max BNB Swap</p>
                       <p>{projectDetails.maxSwap} BNB</p>
                     </div>
