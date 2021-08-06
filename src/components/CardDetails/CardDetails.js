@@ -14,13 +14,19 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { connectWallet } from "../../store/reducer/web3_reducer";
 import { FaRegCopy } from "react-icons/fa";
-import { IoIosArrowRoundBack, IoIosArrowRoundDown, IoMdClose } from "react-icons/io";
+import {
+  IoIosArrowRoundBack,
+  IoIosArrowRoundDown,
+  IoMdClose,
+} from "react-icons/io";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import successImg from '../../images/outlined_tick_done_icon.svg';
-import bnbImage from '../../images/bscAvatar.4144c399.png';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
+import successImg from "../../images/outlined_tick_done_icon.svg";
+import bnbImage from "../../images/bscAvatar.4144c399.png";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
 import { TiTick } from "react-icons/ti";
+import { useSnackbar } from "notistack";
+import { redeemTokens, swapTokens } from "../../store/reducer/launch_reducer";
 
 const smallRedirects = [
   {
@@ -47,11 +53,10 @@ const smallRedirects = [
 
 function CardDetails(props) {
   // const history = useHistory();
-  // console.log(history, props)
   const projectDetails = useSelector(
     (state) => state.launch[props.match.params.projId]
   );
-  const connected = useSelector((state) => state.web3.connected);
+  const { connected, balance } = useSelector((state) => state.web3);
   const dispatch = useDispatch();
   const [timerDays, setTimerDays] = useState("00");
   const [timerHours, setTimerHours] = useState("00");
@@ -60,15 +65,16 @@ function CardDetails(props) {
   const [distance, setDistance] = useState(0);
   const [copy, setCopy] = useState(false);
   const [showSwapInterface, setShowSwapInterface] = useState(false);
-
-  const [pushNotification, setPushNotification] = useState({ vertical: 'top', horizontal: 'right', });
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const [pushNotification, setPushNotification] = useState({
+    vertical: "top",
+    horizontal: "right",
+  });
   const [showNotification, setShowNotification] = useState(false);
-  const [fromValue, setFromValue] = useState(0.009079821113);
-  const [swapBtnDisabled, setSwapBtnDisabled] = useState(false);
+  const [fromValue, setFromValue] = useState("0");
   const [claimed, setClaimed] = useState(false);
 
   const { vertical, horizontal } = pushNotification;
-
 
   const handleClose = () => {
     setShowNotification(false);
@@ -82,15 +88,27 @@ function CardDetails(props) {
     }, 3000);
   };
 
-  let interval = useRef();
+  const snackbarAction = (key) => (
+    <React.Fragment>
+      <div
+        aria-label="close"
+        color="inherit"
+        onClick={() => closeSnackbar(key)}
+        className="notification-btn"
+      >
+        <IoMdClose />
+      </div>
+    </React.Fragment>
+  );
+
+  let intervalRef = useRef();
   const startTimer = () => {
     if (projectDetails.startTime * 1000 < Date.now()) {
       setDistance(0);
       return;
     }
-    interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       const distance = projectDetails.startTime * 1000 - Date.now();
-
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
       const hours = Math.floor(
         (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -99,13 +117,14 @@ function CardDetails(props) {
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       if (distance <= 0) {
-        clearInterval(interval.current);
+        clearInterval(intervalRef.current);
         setDistance(0);
       } else {
         setTimerDays(days);
         setTimerHours(hours);
         setTimerMinutes(minutes);
         setTimerSeconds(seconds);
+        setDistance(distance);
       }
     }, 1000);
   };
@@ -113,9 +132,47 @@ function CardDetails(props) {
   useEffect(() => {
     startTimer();
     return () => {
-      clearInterval(interval.current);
+      clearInterval(intervalRef.current);
     };
   }, []);
+
+  const showFinalSnackbar = (successMessage, errorMessage, payload) => {
+    if (payload["error"] == null) {
+      enqueueSnackbar(
+        <div className="MuiSnackbarContent-message">
+          <div className="MuiSnackbarContent-message-1"></div>
+          <div className="MuiSnackbarContent-message-2">
+            <div>Transaction Completed!</div>
+            <div>{successMessage}</div>
+          </div>
+        </div>,
+        { variant: "success", action: snackbarAction }
+      );
+    } else {
+      enqueueSnackbar(
+        <div className="MuiSnackbarContent-message">
+          <div className="MuiSnackbarContent-message-1"></div>
+          <div className="MuiSnackbarContent-message-2">
+            <div>Transaction Failed!</div>
+            <div>{errorMessage}</div>
+            <div></div>
+          </div>
+        </div>,
+        { variant: "error", action: snackbarAction }
+      );
+    }
+  };
+  const showPendingSnackbar = (message) => {
+    enqueueSnackbar(
+      <div className="MuiSnackbarContent-message">
+        <div className="MuiSnackbarContent-message-1"></div>
+        <div className="MuiSnackbarContent-message-2">
+          <div>Transaction Pending</div>
+        </div>
+      </div>,
+      { variant: "info", action: snackbarAction }
+    );
+  };
 
   const fixDecimals = (val, dec) => {
     if (!val) return 0;
@@ -187,9 +244,9 @@ function CardDetails(props) {
                 <span class="pool-about-dot"></span>
                 {projectDetails.isFinished
                   ? "Sale Finished"
-                  : !distance
-                    ? "Live Now"
-                    : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
+                  : distance <= 0
+                  ? "Live Now"
+                  : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
               </div>
 
               <div class="pool-about-row">
@@ -302,15 +359,14 @@ function CardDetails(props) {
         <Col lg={4} md={12} sm={12} className="">
           <div className="details-second-right-div">
             <div className="sale-card">
-
               {!showSwapInterface && (
                 <>
                   <h2>
                     {projectDetails.isFinished
                       ? "Sale Ended"
-                      : distance
-                        ? "Sale Countdown"
-                        : "Sale Live NOW"}
+                      : distance > 0
+                      ? "Sale Countdown"
+                      : "Sale Live NOW"}
                   </h2>
                   {!distance ? (
                     <div>
@@ -321,7 +377,7 @@ function CardDetails(props) {
                         {fixDecimals(
                           (projectDetails.soldAmount /
                             projectDetails.totalRewardTokens) *
-                          100,
+                            100,
                           0
                         )}
                         % {projectDetails.symbol} Sold
@@ -335,7 +391,7 @@ function CardDetails(props) {
                         <div class="percentage-remaining-bnb-left">
                           {fixDecimals(
                             (projectDetails.soldAmount * 100) /
-                            projectDetails.totalRewardTokens,
+                              projectDetails.totalRewardTokens,
                             0
                           )}
                           %
@@ -405,10 +461,18 @@ function CardDetails(props) {
                         </div>
                         <div className="info-row info-row-color mt-3">
                           <p>Max BNB Swap</p>
-                          <p>{projectDetails.maxSwap} BNB</p>
+                          <p>
+                            {(
+                              projectDetails.maxSwap * projectDetails.tokenRate
+                            ).toLocaleString("fullwide", {
+                              useGrouping: false,
+                              maximumFractionDigits: 20,
+                            })}{" "}
+                            BNB
+                          </p>
                         </div>
                         <button onClick={() => setShowSwapInterface(true)}>
-                          {`PURCHASE ${(projectDetails.symbol).toUpperCase()}`}
+                          {`PURCHASE ${projectDetails.symbol.toUpperCase()}`}
                         </button>
                       </div>
                     ) : (
@@ -425,130 +489,209 @@ function CardDetails(props) {
                   <div className="swap-card">
                     <section>
                       <div className="swap-interface-first-div">
-                        <div onClick={() => setShowSwapInterface(false)} ><IoIosArrowRoundBack /></div>
+                        <div onClick={() => setShowSwapInterface(false)}>
+                          <IoIosArrowRoundBack />
+                        </div>
                         <div>Swap Coins</div>
                       </div>
                       <div className="swap-interface-second-div">
-                        <span>Max. Allocation is 11293309843.24 {projectDetails.symbol}</span>
+                        <span>
+                          Max. Allocation is {projectDetails.maxSwap}{" "}
+                          {projectDetails.symbol}
+                        </span>
                       </div>
                     </section>
-
 
                     <section>
                       <div className="swap-interface-third-div mt-3">
                         <div className="from-available">
                           <div>From</div>
-                          <div>Avaialble: {0.1105}</div>
+                          <div>Avaialble: {fixDecimals(balance, 4)}</div>
                         </div>
                         <div className="num-max-icon">
-                          <div className='swap-from-num'>
-                            <input type="text" value={fromValue} onChange={(e) => setFromValue(e.target.value)} />
+                          <div className="swap-from-num">
+                            <input
+                              type="number"
+                              value={fromValue}
+                              onChange={(e) => {
+                                let val = e.target.value;
+                                const max = Math.min(
+                                  projectDetails.maxSwap * projectDetails.tokenRate -
+                                    projectDetails.myAllocation,
+                                  balance
+                                );
+                                if (Number(val) > max)
+                                  val = max.toLocaleString("fullwide", {
+                                    useGrouping: false,
+                                    maximumFractionDigits: 20,
+                                  });
+                                else if (Number(val) < 0) val = 0;
+                                setFromValue(String(val));
+                              }}
+                            />
                           </div>
-                          <div className='max-btn-bnb-icon'>
-                            <button>MAX</button>
+                          <div className="max-btn-bnb-icon">
+                            <button
+                              onClick={() => {
+                                const max = Math.min(
+                                  projectDetails.maxSwap * projectDetails.tokenRate -
+                                    projectDetails.myAllocation,
+                                  balance
+                                );
+                                setFromValue(
+                                  max.toLocaleString("fullwide", {
+                                    useGrouping: false,
+                                    maximumFractionDigits: 20,
+                                  })
+                                );
+                              }}
+                            >
+                              MAX
+                            </button>
                             <div>
-                              <span className='ml-2 swap-interface-small-icon'><img src={bnbImage} alt="bnb" width='20' height='20' /></span>
-                              <span className='swap-after-img-txt'>BNB</span>
+                              <span className="ml-2 swap-interface-small-icon">
+                                <img
+                                  src={bnbImage}
+                                  alt="bnb"
+                                  width="20"
+                                  height="20"
+                                />
+                              </span>
+                              <span className="swap-after-img-txt">BNB</span>
                             </div>
                           </div>
                         </div>
-                        <div>
-
-                        </div>
+                        <div></div>
                       </div>
                     </section>
-                    <div className='down-arrow'>
+                    <div className="down-arrow">
                       <IoIosArrowRoundDown />
                     </div>
                     <section>
                       <div className="swap-interface-third-div">
                         <div className="from-available">
                           <div>Purchase</div>
-                          <div>Remaining: {220776737729732.7}</div>
+                          <div>
+                            Remaining:{" "}
+                            {fixDecimals(
+                              projectDetails.totalRewardTokens -
+                                projectDetails.soldAmount,
+                              2
+                            )}
+                          </div>
                         </div>
                         <div className="num-max-icon">
-                          <div className='swap-purchase-num-last'>
-                            <input type="number" value={0.009079821113} disabled />
+                          <div className="swap-purchase-num-last">
+                            <input
+                              type="number"
+                              value={(
+                                (1 / projectDetails.tokenRate) *
+                                Number(fromValue)
+                              ).toLocaleString("fullwide", {
+                                useGrouping: false,
+                                maximumFractionDigits: 3,
+                              })}
+                              disabled
+                            />
                           </div>
                           <div>
                             <div>
-                              <span className='swap-interface-small-icon'><img src={projectDetails.smallImage} alt="bnb" width='20' height='20' /></span>
-                              <span className='swap-after-img-txt'>{projectDetails.symbol}</span>
+                              <span className="swap-interface-small-icon">
+                                <img
+                                  src={projectDetails.smallImage}
+                                  alt="bnb"
+                                  width="20"
+                                  height="20"
+                                />
+                              </span>
+                              <span className="swap-after-img-txt">
+                                {projectDetails.symbol}
+                              </span>
                             </div>
                           </div>
                         </div>
-                        <div>
-
-                        </div>
+                        <div></div>
                       </div>
                     </section>
-                    <div className='swap-interface-price'>
-                      <p className=''>Price 0.0000000000804 {projectDetails.symbol} per BNB</p>
+                    <div className="swap-interface-price">
+                      <p className="">
+                        Price{" "}
+                        {(1 / projectDetails.tokenRate).toLocaleString(
+                          "fullwide",
+                          {
+                            useGrouping: false,
+                            maximumFractionDigits: 2,
+                          }
+                        )}{" "}
+                        {projectDetails.symbol} per BNB
+                      </p>
                     </div>
-                    <section className='swap-btn'>
-                      <button disabled={swapBtnDisabled ? true : false} onClick={() => {
-                        setShowNotification(true);
-                        setSwapBtnDisabled(true);
-                        setClaimed(true);
-                        setTimeout(() => {
-                          setShowSwapInterface(false);
-                        }, 3500);
-                      }}>
+                    <section className="swap-btn">
+                      <button
+                        disabled={fromValue <= 0}
+                        onClick={() => {
+                          // setShowNotification(true);
+                          showPendingSnackbar();
+                          dispatch(
+                            swapTokens({
+                              id: props.match.params.projId,
+                              amount: fromValue,
+                            })
+                          ).then((val) => {
+                            setFromValue("0");
+                            showFinalSnackbar(
+                              "Tokens swapped successfully!",
+                              "Failed to swap tokens!",
+                              val
+                            );
+                          });
+                        }}
+                      >
                         Swap
                       </button>
-
-                      <Snackbar
-                        anchorOrigin={{ vertical, horizontal }}
-                        open={showNotification}
-                        autoHideDuration={3000}
-                        onClose={handleClose}
-                        message={
-                          <div className='MuiSnackbarContent-message'>
-                            <div className='MuiSnackbarContent-message-1'>
-                              <div className='MuiSnackbarContent-message-1-icon'>
-                                <TiTick />
-                              </div>
-                            </div>
-                            <div className='MuiSnackbarContent-message-2'>
-                              <div>Swap Successed!</div>
-                              <div>You swapped</div>
-                              <div>{0.00907982111376496} successfully</div>
-                            </div>
-                          </div>
-                        }
-                        key={vertical + horizontal}
-                        action={
-                          <React.Fragment>
-                            <div
-                              aria-label="close"
-                              color="inherit"
-                              onClick={handleClose}
-                              className='notification-btn'
-                            >
-                              <IoMdClose />
-                            </div>
-                          </React.Fragment>
-                        }
-                      />
                     </section>
                   </div>
                 </div>
               )}
               {connected && (
                 <>
-                  <p className='info-row-allocation'>My Allocations</p>
+                  <p className="info-row-allocation">My Allocations</p>
                   <div className="launch-icon">
                     <div className="launch-icon-first-div">
-                      <img src={projectDetails.smallImage} alt={projectDetails.smallImage} />
+                      <img
+                        src={projectDetails.smallImage}
+                        alt={projectDetails.smallImage}
+                      />
                       <span>{projectDetails.myAllocation} BNB</span>
                     </div>
                     <div className="launch-icon-last-btn">
-                      {claimed === false && (
-                        <button>Redeem <br /> Now</button>
-                      )}
-                      {claimed === true && (
-                        <button disabled={true}>Claimed <br /> {projectDetails.symbol}</button>
-                      )}
+                      {
+                        <button
+                          disabled={projectDetails.redeemed}
+                          onClick={() => {
+                            showPendingSnackbar();
+                            dispatch(
+                              redeemTokens({ id: props.match.params.projId })
+                            ).then((val) =>
+                              showFinalSnackbar(
+                                "Tokens redeemed successfully!",
+                                "Failed to redeem tokens!",
+                                val
+                              )
+                            );
+                          }}
+                        >
+                          {claimed ? (
+                            <div>
+                              Claimed <br /> {projectDetails.symbol}
+                            </div>
+                          ) : (
+                            <div>
+                              Redeem <br /> Now
+                            </div>
+                          )}
+                        </button>
+                      }
                     </div>
                   </div>
                 </>
@@ -557,6 +700,39 @@ function CardDetails(props) {
           </div>
         </Col>
       </Row>
+      {/* <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={showNotification}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={
+          <div className="MuiSnackbarContent-message">
+            <div className="MuiSnackbarContent-message-1">
+              <div className="MuiSnackbarContent-message-1-icon">
+                <TiTick />
+              </div>
+            </div>
+            <div className="MuiSnackbarContent-message-2">
+              <div>Swap Successed!</div>
+              <div>You swapped</div>
+              <div>{0.00907982111376496} successfully</div>
+            </div>
+          </div>
+        }
+        key={horizontal + vertical}
+        action={
+          <React.Fragment>
+            <div
+              aria-label="close"
+              color="inherit"
+              onClick={handleClose}
+              className="notification-btn"
+            >
+              <IoMdClose />
+            </div>
+          </React.Fragment>
+        }
+      /> */}
     </Container>
   );
 }

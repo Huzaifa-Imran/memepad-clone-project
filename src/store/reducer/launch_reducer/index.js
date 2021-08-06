@@ -89,6 +89,42 @@ export const initLaunchInfo = createAsyncThunk(
   }
 );
 
+export const swapTokens = createAsyncThunk(
+  "SwapTokens",
+  async (action, thunkAPI) => {
+    try {
+      const { launchContract, decimals } =
+        thunkAPI.getState().launch[action.id];
+      const { address } = thunkAPI.getState().web3;
+      await launchContract.methods
+        .buyTokens()
+        .send({ from: address, value: Web3.utils.toWei(action.amount) });
+      thunkAPI.dispatch(loadLaunchInfo(action.id));
+    } catch (error) {
+      console.log("Error swapping tokens:", error);
+      throw error;
+    }
+  }
+);
+
+export const redeemTokens = createAsyncThunk(
+  "SwapTokens",
+  async (action, thunkAPI) => {
+    try {
+      const { launchContract } =
+        thunkAPI.getState().launch[action.id];
+      const { address } = thunkAPI.getState().web3;
+      await launchContract.methods
+        .redeemTokens()
+        .send({ from: address });
+      thunkAPI.dispatch(loadLaunchInfo(action.id));
+    } catch (error) {
+      console.log("Error redeeming tokens:", error);
+      throw error;
+    }
+  }
+);
+
 export const loadLaunchInfo = createAsyncThunk(
   "LoadLaunchInfo",
   async (action, thunkAPI) => {
@@ -113,8 +149,11 @@ export const loadLaunchInfo = createAsyncThunk(
       return {
         soldAmountInBnb,
         soldAmount: removeDecimals(responses[0]),
-        myAllocation: removeDecimals(responses[1]["_amount"]),
-        maxSwap: removeDecimals(responses[1]["_maxPayableAmount"]),
+        myAllocation: removeDecimals(responses[1]["_rewardedAmount"]),
+        maxSwap: removeDecimals(
+          responses[1]["_maxPayableAmount"] - responses[1]["_rewardedAmount"]
+        ),
+        redeemed: Boolean(responses[1]["_redeemed"]),
         isFinished: Boolean(responses[2]),
         projId: action,
       };
@@ -152,6 +191,7 @@ const launchSlice = createSlice({
       state[projId].isFinished = action.payload.isFinished;
       state[projId].myAllocation = action.payload.myAllocation;
       state[projId].maxSwap = action.payload.maxSwap;
+      state[projId].redeemed = action.payload.redeemed;
     },
   },
 });

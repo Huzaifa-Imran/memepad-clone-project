@@ -20,8 +20,6 @@ import { loadLaunchInfo } from "../../store/reducer/launch_reducer";
 import { projIds } from "../../store/reducer/launch_reducer/projectInitialStates";
 
 function Projects(props) {
-  const bootyInfo = useSelector((state) => state.launch.booty);
-  const elondogeInfo = useSelector((state) => state.launch.elondoge);
   const allProjects = useSelector((state) => state.launch);
   const connected = useSelector((state) => state.web3.connected);
   const dispatch = useDispatch();

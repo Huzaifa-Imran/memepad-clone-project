@@ -6,7 +6,6 @@ import { initializeLaunches } from "../launch_reducer";
 import { initializeStaking } from "../staking_reducer";
 import memepad from "../launch_reducer/memepad.json";
 
-
 export const connectWallet = createAsyncThunk(
   "ConnectWallet",
   async (action, thunkAPI) => {
@@ -80,16 +79,19 @@ export const initWeb3 = createAsyncThunk(
         }
       }
       const web3 = new Web3(provider);
-
-      provider.on("accountsChanged", (accounts) => {
-        thunkAPI.dispatch(fetchAccount());
+      provider.on("accountsChanged", async (accounts) => {
+        await thunkAPI.dispatch(fetchAccount());
+        thunkAPI.dispatch(initializeStaking());
+        thunkAPI.dispatch(initializeLaunches());
       });
 
       // Subscribe to chainId change
       provider.on("chainChanged", (chainId) => {
-        if(chainId != memepad.network) thunkAPI.dispatch(disconnectWallet());
-        thunkAPI.dispatch(initializeStaking());
-        thunkAPI.dispatch(initializeLaunches());
+        if (chainId != memepad.network) thunkAPI.dispatch(disconnectWallet());
+        else {
+          thunkAPI.dispatch(initializeStaking());
+          thunkAPI.dispatch(initializeLaunches());
+        }
       });
       return {
         web3,
@@ -108,11 +110,30 @@ export const fetchAccount = createAsyncThunk(
       const web3 = thunkAPI.getState().web3.web3;
       const address = (await web3.eth.getAccounts())[0];
       if (!address) throw "Account disconnected";
+      const balance = await web3.eth.getBalance(address);
       return {
         address,
+        balance: Number(Web3.utils.fromWei(balance)),
       };
     } catch (error) {
       console.log("Error fetching account address", error);
+      throw error;
+    }
+  }
+);
+
+export const fetchBalance = createAsyncThunk(
+  "FetchBalance",
+  async (action, thunkAPI) => {
+    try {
+      const { web3, address } = thunkAPI.getState().web3;
+      const balance = await web3.eth.getBalance(address);
+
+      return {
+        balance: Number(Web3.utils.fromWei(balance)),
+      };
+    } catch (error) {
+      console.log("Error fetching account balance", error);
       throw error;
     }
   }
@@ -124,6 +145,7 @@ const web3Slice = createSlice({
     web3: null,
     address: null,
     shortAddress: null,
+    balance: null,
     connected: false,
     accountUrl: "#",
   },
@@ -146,10 +168,15 @@ const web3Slice = createSlice({
         "..." +
         action.payload.address.slice(38, 42);
       state.accountUrl = memepad.prefix + action.payload.address;
+      state.balance = action.payload.balance;
       state.connected = true;
     },
     [fetchAccount.rejected]: (state) => {
       state.connected = false;
+    },
+    [fetchBalance.fulfilled]: (state, action) => {
+      console.log("balance fetched");
+      state.balance = action.payload.balance;
     },
   },
 });
