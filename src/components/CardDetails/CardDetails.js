@@ -14,7 +14,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { connectWallet } from "../../store/reducer/web3_reducer";
 import { FaRegCopy } from "react-icons/fa";
+import { IoIosArrowRoundBack, IoIosArrowRoundDown, IoMdClose } from "react-icons/io";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import successImg from '../../images/outlined_tick_done_icon.svg';
+import bnbImage from '../../images/bscAvatar.4144c399.png';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import { TiTick } from "react-icons/ti";
 
 const smallRedirects = [
   {
@@ -53,6 +59,20 @@ function CardDetails(props) {
   const [timerSeconds, setTimerSeconds] = useState("00");
   const [distance, setDistance] = useState(0);
   const [copy, setCopy] = useState(false);
+  const [showSwapInterface, setShowSwapInterface] = useState(false);
+
+  const [pushNotification, setPushNotification] = useState({ vertical: 'top', horizontal: 'right', });
+  const [showNotification, setShowNotification] = useState(false);
+  const [fromValue, setFromValue] = useState(0.009079821113);
+  const [swapBtnDisabled, setSwapBtnDisabled] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+
+  const { vertical, horizontal } = pushNotification;
+
+
+  const handleClose = () => {
+    setShowNotification(false);
+  };
 
   const copyAddress = () => {
     navigator.clipboard.writeText(projectDetails.address);
@@ -168,8 +188,8 @@ function CardDetails(props) {
                 {projectDetails.isFinished
                   ? "Sale Finished"
                   : !distance
-                  ? "Live Now"
-                  : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
+                    ? "Live Now"
+                    : `Live in ${timerDays}d:${timerHours}h:${timerMinutes}m`}
               </div>
 
               <div class="pool-about-row">
@@ -278,124 +298,261 @@ function CardDetails(props) {
             </div>
           </div>
         </Col>
+
         <Col lg={4} md={12} sm={12} className="">
           <div className="details-second-right-div">
             <div className="sale-card">
-              <h2>
-                {projectDetails.isFinished
-                  ? "Sale Ended"
-                  : distance
-                  ? "Sale Countdown"
-                  : "Sale Live NOW"}
-              </h2>
-              {!distance ? (
-                <div>
-                  <h1 className="when-zero">
-                    <div class="launch-icon">
-                      <img src={projectDetails.smallImage} alt="launch" />
-                    </div>
-                    {fixDecimals(
-                      (projectDetails.soldAmount /
-                        projectDetails.totalRewardTokens) *
-                        100,
-                      0
-                    )}
-                    % {projectDetails.symbol} Sold
-                    <div className="count-progress-bar">
-                      {/* <div className="count-progress-bar-filter"></div> */}
-                      <div>{progressInstance}</div>
-                    </div>
-                  </h1>
 
-                  <div class="percentage-remaining-bnb-main mt-2">
-                    <div class="percentage-remaining-bnb-left">
-                      {fixDecimals(
-                        (projectDetails.soldAmount * 100) /
-                          projectDetails.totalRewardTokens,
-                        0
-                      )}
-                      %
-                    </div>
-                    <div class="percentage-remaining-bnb-right">
-                      {`${fixDecimals(projectDetails.soldAmountInBnb, 2)} / 
+              {!showSwapInterface && (
+                <>
+                  <h2>
+                    {projectDetails.isFinished
+                      ? "Sale Ended"
+                      : distance
+                        ? "Sale Countdown"
+                        : "Sale Live NOW"}
+                  </h2>
+                  {!distance ? (
+                    <div>
+                      <h1 className="when-zero">
+                        <div class="launch-icon">
+                          <img src={projectDetails.smallImage} alt="launch" />
+                        </div>
+                        {fixDecimals(
+                          (projectDetails.soldAmount /
+                            projectDetails.totalRewardTokens) *
+                          100,
+                          0
+                        )}
+                        % {projectDetails.symbol} Sold
+                        <div className="count-progress-bar">
+                          {/* <div className="count-progress-bar-filter"></div> */}
+                          <div>{progressInstance}</div>
+                        </div>
+                      </h1>
+
+                      <div class="percentage-remaining-bnb-main mt-2">
+                        <div class="percentage-remaining-bnb-left">
+                          {fixDecimals(
+                            (projectDetails.soldAmount * 100) /
+                            projectDetails.totalRewardTokens,
+                            0
+                          )}
+                          %
+                        </div>
+                        <div class="percentage-remaining-bnb-right">
+                          {`${fixDecimals(projectDetails.soldAmountInBnb, 2)} / 
                       ${fixDecimals(projectDetails.totalTokensInBnb, 2)} BNB`}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="countdown-progress">
-                  <section className="countdown-day">
-                    <div className="countdown-item">
-                      <h3>{timerDays}</h3>
-                      <p>Days</p>
+                  ) : (
+                    <div className="countdown-progress">
+                      <section className="countdown-day">
+                        <div className="countdown-item">
+                          <h3>{timerDays}</h3>
+                          <p>Days</p>
+                        </div>
+                        <div className="countdown-item">
+                          <h3>{timerHours}</h3>
+                          <p>Hours</p>
+                        </div>
+                        <div className="countdown-item">
+                          <h3>{timerMinutes}</h3>
+                          <p>Minutes</p>
+                        </div>
+                        <div className="countdown-item">
+                          <h3>{timerSeconds}</h3>
+                          <p>Seconds</p>
+                        </div>
+                      </section>
                     </div>
-                    <div className="countdown-item">
-                      <h3>{timerHours}</h3>
-                      <p>Hours</p>
+                  )}
+                  <section>
+                    <div className="info-row mt-3">
+                      <p>
+                        {projectDetails.symbol} <br /> Price:
+                      </p>
+                      <p>
+                        {Number(projectDetails.tokenRate).toLocaleString(
+                          "fullwide",
+                          { useGrouping: false, maximumFractionDigits: 20 }
+                        )}{" "}
+                        <br /> BNB
+                      </p>
                     </div>
-                    <div className="countdown-item">
-                      <h3>{timerMinutes}</h3>
-                      <p>Minutes</p>
+                    <div className="info-row mt-3">
+                      <p>
+                        {projectDetails.symbol} <br /> Sold:
+                      </p>
+                      <p>
+                        {projectDetails.soldAmount} {projectDetails.symbol}
+                      </p>
                     </div>
-                    <div className="countdown-item">
-                      <h3>{timerSeconds}</h3>
-                      <p>Seconds</p>
+                    <div className="info-row mt-3">
+                      <p>Total Raise</p>
+                      <p>
+                        {Number(projectDetails.totalTokensInBnb).toFixed(0)} BNB
+                      </p>
                     </div>
                   </section>
+                  <section className="btn-container">
+                    {connected ? (
+                      <div>
+                        <div className="info-row info-row-color mt-3">
+                          <p>My Allocation</p>
+                          <p>{projectDetails.myAllocation} BNB</p>
+                        </div>
+                        <div className="info-row info-row-color mt-3">
+                          <p>Max BNB Swap</p>
+                          <p>{projectDetails.maxSwap} BNB</p>
+                        </div>
+                        <button onClick={() => setShowSwapInterface(true)}>
+                          {`PURCHASE ${(projectDetails.symbol).toUpperCase()}`}
+                        </button>
+                      </div>
+                    ) : (
+                      <button onClick={() => dispatch(connectWallet())}>
+                        Connect Wallet
+                      </button>
+                    )}
+                  </section>
+                </>
+              )}
+
+              {showSwapInterface && (
+                <div className="details-second-right-div-not-using">
+                  <div className="swap-card">
+                    <section>
+                      <div className="swap-interface-first-div">
+                        <div onClick={() => setShowSwapInterface(false)} ><IoIosArrowRoundBack /></div>
+                        <div>Swap Coins</div>
+                      </div>
+                      <div className="swap-interface-second-div">
+                        <span>Max. Allocation is 11293309843.24 {projectDetails.symbol}</span>
+                      </div>
+                    </section>
+
+
+                    <section>
+                      <div className="swap-interface-third-div mt-3">
+                        <div className="from-available">
+                          <div>From</div>
+                          <div>Avaialble: {0.1105}</div>
+                        </div>
+                        <div className="num-max-icon">
+                          <div className='swap-from-num'>
+                            <input type="text" value={fromValue} onChange={(e) => setFromValue(e.target.value)} />
+                          </div>
+                          <div className='max-btn-bnb-icon'>
+                            <button>MAX</button>
+                            <div>
+                              <span className='ml-2 swap-interface-small-icon'><img src={bnbImage} alt="bnb" width='20' height='20' /></span>
+                              <span className='swap-after-img-txt'>BNB</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+
+                        </div>
+                      </div>
+                    </section>
+                    <div className='down-arrow'>
+                      <IoIosArrowRoundDown />
+                    </div>
+                    <section>
+                      <div className="swap-interface-third-div">
+                        <div className="from-available">
+                          <div>Purchase</div>
+                          <div>Remaining: {220776737729732.7}</div>
+                        </div>
+                        <div className="num-max-icon">
+                          <div className='swap-purchase-num-last'>
+                            <input type="number" value={0.009079821113} disabled />
+                          </div>
+                          <div>
+                            <div>
+                              <span className='swap-interface-small-icon'><img src={projectDetails.smallImage} alt="bnb" width='20' height='20' /></span>
+                              <span className='swap-after-img-txt'>{projectDetails.symbol}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+
+                        </div>
+                      </div>
+                    </section>
+                    <div className='swap-interface-price'>
+                      <p className=''>Price 0.0000000000804 {projectDetails.symbol} per BNB</p>
+                    </div>
+                    <section className='swap-btn'>
+                      <button disabled={swapBtnDisabled ? true : false} onClick={() => {
+                        setShowNotification(true);
+                        setSwapBtnDisabled(true);
+                        setClaimed(true);
+                        setTimeout(() => {
+                          setShowSwapInterface(false);
+                        }, 3500);
+                      }}>
+                        Swap
+                      </button>
+
+                      <Snackbar
+                        anchorOrigin={{ vertical, horizontal }}
+                        open={showNotification}
+                        autoHideDuration={3000}
+                        onClose={handleClose}
+                        message={
+                          <div className='MuiSnackbarContent-message'>
+                            <div className='MuiSnackbarContent-message-1'>
+                              <div className='MuiSnackbarContent-message-1-icon'>
+                                <TiTick />
+                              </div>
+                            </div>
+                            <div className='MuiSnackbarContent-message-2'>
+                              <div>Swap Successed!</div>
+                              <div>You swapped</div>
+                              <div>{0.00907982111376496} successfully</div>
+                            </div>
+                          </div>
+                        }
+                        key={vertical + horizontal}
+                        action={
+                          <React.Fragment>
+                            <div
+                              aria-label="close"
+                              color="inherit"
+                              onClick={handleClose}
+                              className='notification-btn'
+                            >
+                              <IoMdClose />
+                            </div>
+                          </React.Fragment>
+                        }
+                      />
+                    </section>
+                  </div>
                 </div>
               )}
-              <section>
-                <div className="info-row mt-3">
-                  <p>
-                    {projectDetails.symbol} <br /> Price:
-                  </p>
-                  <p>
-                    {Number(projectDetails.tokenRate).toLocaleString(
-                      "fullwide",
-                      { useGrouping: false, maximumFractionDigits: 20 }
-                    )}{" "}
-                    <br /> BNB
-                  </p>
-                </div>
-                <div className="info-row mt-3">
-                  <p>
-                    {projectDetails.symbol} <br /> Sold:
-                  </p>
-                  <p>
-                    {projectDetails.soldAmount} {projectDetails.symbol}
-                  </p>
-                </div>
-                <div className="info-row mt-3">
-                  <p>Total Raise</p>
-                  <p>
-                    {Number(projectDetails.totalTokensInBnb).toFixed(0)} BNB
-                  </p>
-                </div>
-              </section>
-              <section className="btn-container">
-                {connected ? (
-                  <div>
-                    <div className="info-row mt-3">
-                      <p>My Allocation</p>
-                      <p>{projectDetails.myAllocation} BNB</p>
+              {connected && (
+                <>
+                  <p className='info-row-allocation'>My Allocations</p>
+                  <div className="launch-icon">
+                    <div className="launch-icon-first-div">
+                      <img src={projectDetails.smallImage} alt={projectDetails.smallImage} />
+                      <span>{projectDetails.myAllocation} BNB</span>
                     </div>
-                    <div className="info-row mt-3">
-                      <p>Max BNB Swap</p>
-                      <p>{projectDetails.maxSwap} BNB</p>
-                    </div>
-
-                    <p>My Allocation</p>
-                    <div class="launch-icon">
-                      <img src={projectDetails.smallImage} alt="" />
-                      <p>{projectDetails.myAllocation} BNB</p>
+                    <div className="launch-icon-last-btn">
+                      {claimed === false && (
+                        <button>Redeem <br /> Now</button>
+                      )}
+                      {claimed === true && (
+                        <button disabled={true}>Claimed <br /> {projectDetails.symbol}</button>
+                      )}
                     </div>
                   </div>
-                ) : (
-                  <button onClick={() => dispatch(connectWallet())}>
-                    Connect Wallet
-                  </button>
-                )}
-              </section>
+                </>
+              )}
             </div>
           </div>
         </Col>

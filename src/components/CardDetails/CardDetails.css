@@ -161,6 +161,7 @@
 }
 
 .info-row p:first-child {
+  font-family: Rubik, sans-serif;
   font-size: 15px;
   font-weight: 500;
   line-height: 1;
@@ -169,6 +170,7 @@
 }
 
 .info-row p:last-child {
+  font-family: Rubik, sans-serif;
   font-size: 15px;
   font-weight: 500;
   line-height: 1;
@@ -177,12 +179,27 @@
   color: rgb(34, 40, 42);
 }
 
+.info-row-color p {
+  font-family: Rubik, sans-serif;
+  color: #40a4f3 !important;
+}
+
+.info-row-allocation {
+  font-family: Rubik, sans-serif;
+  margin-top: 10px;
+  opacity: 0.65;
+}
+
 @media screen and (max-width: 991px) {
   .info-row p:first-child {
     font-size: 11px;
   }
 
   .info-row p:last-child {
+    font-size: 11px;
+  }
+
+  .info-row-color {
     font-size: 11px;
   }
 }
@@ -215,6 +232,8 @@
   color: #fff;
   text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
   box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+  opacity: 1;
+  transition: all 0.2s ease-in;
 }
 
 .btn-container button:hover {
@@ -273,6 +292,17 @@
 
 .launch-icon {
   font-family: Rubik, sans-serif;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.launch-icon-first-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .launch-icon img {
@@ -283,6 +313,30 @@
   flex-shrink: 0;
   float: left;
   background: center center / cover no-repeat rgb(235, 235, 235);
+}
+
+.launch-icon-last-btn button {
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  height: 60px;
+  width: 100%;
+  background: linear-gradient(rgb(36, 153, 248), rgb(7, 125, 215));
+  -webkit-appearance: button;
+  border-radius: 5px !important;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+  opacity: 1;
+  transition: all 0.2s ease-in;
+}
+.launch-icon-last-btn button:hover {
+  opacity: 0.85;
 }
 
 .details-second-left-div {
@@ -471,12 +525,314 @@
   letter-spacing: normal;
 }
 
-.address-copy-btn{
+.address-copy-btn {
   background: none;
   border: 0;
   transition: all 0.15s ease-in;
 }
 
-.address-copy-btn:hover{
+.address-copy-btn:hover {
   opacity: 0.6;
 }
+
+/* .swap-card {
+  padding: 0px;
+  border-radius: 15px;
+  box-shadow: rgb(0 0 0 / 5%) 0px 9.5px 45px 0px;
+  background-color: rgb(255, 255, 255);
+  max-width: 400px;
+  width: 100%;
+} */
+
+.swap-interface-first-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.swap-interface-first-div div:first-child svg {
+  font-size: 40px;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+.swap-interface-first-div div:last-child {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.swap-btn button {
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  width: 100%;
+  background: linear-gradient(rgb(36, 153, 248), rgb(7, 125, 215));
+  -webkit-appearance: button;
+  border-radius: 5px !important;
+  font-family: Rubik, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+  opacity: 1;
+  transition: all 0.2s ease-in;
+}
+
+.swap-btn button:hover {
+  opacity: 0.85;
+}
+
+.swap-interface-second-div span {
+  color: #838792;
+  margin-top: 15px;
+}
+
+.swap-interface-third-div {
+  border: 1px solid #b0b5c0;
+  border-radius: 15px;
+  padding: 15px 20px;
+}
+
+.from-available {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: #838792;
+  font-size: 14px;
+}
+
+.num-max-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.max-btn-bnb-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.max-btn-bnb-icon button {
+  border-radius: 30px;
+  color: rgb(0, 152, 255);
+  background-color: #dde8ed;
+  border: 0;
+  padding: 3px 10px;
+  font-family: Rubik, sans-serif;
+  font-weight: 500;
+  transition: all 0.15s ease-in;
+}
+
+.swap-interface-small-icon img {
+  border-radius: 50%;
+}
+
+.down-arrow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.down-arrow svg {
+  font-size: 40px;
+  color: #40a4f3;
+}
+
+.swap-after-img-txt {
+  margin-left: 10px;
+  font-family: Rubik, sans-serif;
+  font-weight: 600;
+}
+
+.swap-from-num {
+  font-family: Rubik, sans-serif;
+  font-weight: 500;
+  width: 140px;
+  -webkit-appearance: none;
+  margin: 0;
+  overflow: hidden;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.swap-from-num input {
+  outline: none;
+  border: 0;
+}
+
+.swap-purchase-num {
+  font-family: Rubik, sans-serif;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+.swap-purchase-num-last {
+  font-family: Rubik, sans-serif;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+.swap-purchase-num-last input {
+  border: 0;
+  outline: none;
+}
+
+.swap-purchase-num-last input:active {
+  border: 0;
+  outline: none;
+}
+
+.swap-purchase-num-last input:focus {
+  border: 0;
+  outline: none;
+}
+
+.swap-purchase-num-last input:hover {
+  border: 0;
+  outline: none;
+  cursor: not-allowed;
+}
+
+.swap-interface-price {
+  padding-left: 20px;
+}
+
+.swap-interface-price p {
+  color: #838792;
+  font-size: 15px;
+  font-family: Rubik, sans-serif;
+  margin-top: 10px;
+}
+
+.swap-btn button[disabled]:active,
+.swap-btn button[disabled],
+input[type="button"][disabled]:active,
+input[type="button"][disabled],
+input[type="submit"][disabled]:active,
+input[type="submit"][disabled] {
+  cursor: not-allowed !important;
+  background: #838792 !important;
+  opacity: 1 !important;
+}
+
+.launch-icon-last-btn button[disabled]:active,
+.launch-icon-last-btn button[disabled],
+input[type="button"][disabled]:active,
+input[type="button"][disabled],
+input[type="submit"][disabled]:active,
+input[type="submit"][disabled] {
+  cursor: not-allowed !important;
+  background: #838792 !important;
+  opacity: 1 !important;
+}
+
+/* Snackbar css */
+.MuiSnackbarContent-root {
+  color: #22282a !important;
+  display: flex;
+  padding: 0px 0px !important;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  align-items: center;
+  font-family: Rubik, sans-serif !important;
+  font-weight: 400;
+  line-height: 1.43;
+  border-radius: 4px;
+  letter-spacing: 0.01071em;
+  background-color: #fff !important;
+  overflow: hidden !important;
+}
+
+.MuiPaper-elevation6 {
+  border-radius: 15px !important;
+}
+
+.MuiSnackbarContent-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 0px !important;
+}
+
+.MuiSnackbarContent-message-1 {
+  background-color: rgb(66, 228, 175) !important;
+  height: 100px;
+}
+
+.MuiSnackbarContent-message-1-icon {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  margin: 20px 40px 0 40px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.MuiSnackbarContent-message-1-icon svg {
+  color: #fff;
+  font-size: 30px;
+}
+
+.MuiSnackbarContent-message-2 {
+  color: rgb(40, 13, 95);
+  margin-left: 10px;
+}
+
+.MuiSnackbarContent-message-2 div:first-child {
+  font-family: Rubik, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+}
+.MuiSnackbarContent-message-2 div:not(:first-child) {
+  font-family: Rubik, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.MuiSnackbarContent-action {
+  height: 100px;
+  width: 100px;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.notification-btn {
+  margin-top: 15px;
+  margin-bottom: auto !important;
+  background: none !important;
+  color: rgb(66, 228, 175) !important;
+  cursor: pointer;
+}
+
+.notification-btn svg {
+  background: none !important;
+  color: rgb(66, 228, 175) !important;
+  cursor: pointer;
+  font-size: 30px;
+}
+/* Snackbar css */
