@@ -435,6 +435,134 @@ img {
   padding-top: 50px;
 }
 
+@media (max-width: 768px) {
+
+  .div-five {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-seven {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-five-inner-col-1 {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-six-inner-col-1 {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-seven-inner-col-1 {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-five-inner-col-2 {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-seven-inner-col-2 {
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .div-five-inner-col-2 .title {
+    font-size: 35px;
+    line-height: 1.14;
+    letter-spacing: -0.88px;
+    text-align: center !important;
+    color: rgb(34, 40, 42);
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 15px;
+  }
+
+  .div-six-inner-col-1 .title {
+    font-size: 35px;
+    line-height: 1.14;
+    letter-spacing: -0.88px;
+    text-align: center !important;
+    color: rgb(34, 40, 42);
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 15px;
+  }
+
+  .div-seven-inner-col-2 .title {
+    font-size: 35px;
+    line-height: 1.14;
+    letter-spacing: -0.88px;
+    text-align: center !important;
+    color: rgb(34, 40, 42);
+    width: 100%;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 15px;
+  }
+
+  .div-five-inner-col-2 .info {
+    font-size: 18px;
+    line-height: 1.67;
+    text-align: center;
+    color: rgb(112, 116, 130);
+    margin-top: 20px;
+    max-width: 430px;
+  }
+
+  .div-six-inner-col-1 .info {
+    font-size: 18px;
+    line-height: 1.67;
+    text-align: center;
+    color: rgb(112, 116, 130);
+    margin-top: 20px;
+    max-width: 430px;
+  }
+
+  .div-seven-inner-col-2 .info {
+    font-size: 18px;
+    line-height: 1.67;
+    text-align: center !important;
+    color: rgb(112, 116, 130);
+    margin-top: 20px;
+    max-width: 430px;
+  }
+}
+
 .div-seven-inner-col-1 {
   height: 100%;
   width: 100%;
@@ -685,6 +813,28 @@ img {
   justify-content: center;
   margin-top: 30px;
 }
+
+@media (max-width: 555px) {
+  .tokenomics__chart {
+    max-width: 100%;
+    padding-left: 35px;
+    padding-right: 35px;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+  }
+
+  .tokenomics__legend {
+    list-style: none;
+    margin: 25px 0 0 0px !important;
+    padding: 0;
+  }
+}
+
 .tokenomics__chartImage {
   width: 205px;
 }
