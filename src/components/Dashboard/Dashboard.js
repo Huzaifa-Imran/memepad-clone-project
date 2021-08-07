@@ -20,6 +20,7 @@ import logo from "../../images/mempad-logo.svg";
 import SidebarNew from "../../components/sidebar/SidebarNew";
 import { projIds } from "../../store/reducer/launch_reducer/projectInitialStates";
 import { loadLaunchInfo } from "../../store/reducer/launch_reducer";
+import connectLogo from '../../images/connect-logo.svg';
 
 function Dashboard(props) {
   const [modalShow, setModalShow] = useState(false);
@@ -52,10 +53,12 @@ function Dashboard(props) {
       }
     }, 10000);
     return () => {
-        clearInterval(interval);
-        clearInterval(interval2);
+      clearInterval(interval);
+      clearInterval(interval2);
     };
   });
+
+  const logoElement = <img src={connectLogo} alt='Connect Logo' />;
 
   return (
     <div className="main-layout">
@@ -71,19 +74,16 @@ function Dashboard(props) {
             onClick={() => setShowSidebar(!showSidebar)}
           >
             <span
-              className={`Hamburger_dash__20BhT ${
-                !showSidebar && "hamburger-first-child"
-              }`}
+              className={`Hamburger_dash__20BhT ${!showSidebar && "hamburger-first-child"
+                }`}
             ></span>
             <span
-              className={`Hamburger_dash__20BhT ${
-                !showSidebar && "middle-hamburger-hide"
-              }`}
+              className={`Hamburger_dash__20BhT ${!showSidebar && "middle-hamburger-hide"
+                }`}
             ></span>
             <span
-              className={`Hamburger_dash__20BhT ${
-                !showSidebar && "hamburger-last-child"
-              }`}
+              className={`Hamburger_dash__20BhT ${!showSidebar && "hamburger-last-child"
+                }`}
             ></span>
           </button>
           <div className="header-logo-container">
@@ -93,25 +93,38 @@ function Dashboard(props) {
           </div>
           <strong className="Header_title__2eSkT">{title}</strong>
           <div className="Header_wallet__1DOlJ">
-            {connected
-              ? `${balance.toLocaleString("fullwide", {
+            {/* <span className='header-wallet-balance'>
+              {connected
+                ? `${balance.toLocaleString("fullwide", {
                   useGrouping: false,
                   maxmimumFractionDigits: 4,
                 })}BNB`
-              : ""}
+                : ""}
+            </span> */}
+            {connected ? (
+              <span className='header-wallet-balance'>
+                `${balance.toLocaleString("fullwide", {
+                  useGrouping: false,
+                  maxmimumFractionDigits: 4,
+                })}BNB`
+              </span>
+            )
+            :
+            null}
             <button
               onClick={
                 connected
                   ? () => {
-                      setModalShow(true);
-                    }
+                    setModalShow(true);
+                  }
                   : () => {
-                      dispatch(connectWallet());
-                    }
+                    dispatch(connectWallet());
+                  }
               }
               className="user-btn"
             >
-              {connected ? shortAddress : "Connect Wallet"}
+              {/* {!connected ? shortAddress : "Connect Wallet"} */}
+              {connected ? <span>{shortAddress} <img src={connectLogo} alt="Connect Logo" width='25' height='25' /> </span> : "Connect Wallet"}
             </button>
           </div>
         </header>

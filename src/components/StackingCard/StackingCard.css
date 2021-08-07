@@ -820,6 +820,24 @@
   font-weight: 600;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.umc3 input{
+  background-color: #f8f5f5;
+  width: 100%;
+  outline: none;
+  border: 1px solid rgb(40, 13, 95, .3);
+  border-radius: 5px;
+}
+
 .umc4 {
   font-size: 15px;
   font-family: Rubik, sans-serif;

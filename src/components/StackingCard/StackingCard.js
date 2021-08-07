@@ -49,7 +49,7 @@ function StackingCard(props) {
   const classes = useStyles();
   const [showCollectModal, setShowCollectModal] = useState(false);
   const [showStakingModal, setShowStakingModal] = useState(null);
-  const [rangeValue, setRangeValue] = useState(0.0);
+  const [rangeValue, setRangeValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setRangeValue(newValue);
@@ -345,7 +345,9 @@ function StackingCard(props) {
                         </div>
                       </div>
                       <div className="unstake-modal-content-div-2">
-                        <div className="umc3">{rangeValue}</div>
+                        <div className="umc3">
+                          <input type="number" value={rangeValue} onChange={(e)=> setRangeValue(e.target.value)} />
+                        </div>
                         <div className="umc4">~27670.00 USD</div>
                       </div>
                       <div className="unstake-modal-content-div-3">

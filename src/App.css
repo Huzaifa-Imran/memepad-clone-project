@@ -354,15 +354,18 @@
   background-image: linear-gradient(0deg, #0078ff, #4ca4f3);
   color: #fff;
   transition: opacity 0.15s ease-in;
-  padding: 0 19px;
+  padding: 0px 15px;
   min-height: 30px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 400;
   letter-spacing: 0.55px;
-  border-radius: 2.5px;
-  line-height: 9px;
+  border-radius: 4px;
   box-sizing: border-box;
   border: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-btn {
@@ -464,4 +467,29 @@
 
 .b {
   border: 1px solid red;
+}
+
+.Header_wallet__1DOlJ{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-wallet-balance{
+  background-color: rgb(231, 229, 231);
+  height: 100%;
+  transition: opacity 0.15s ease-in;
+  padding: 6px 14px;
+  min-height: 30px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.55px;
+  border-radius: 4px;
+  line-height: 9px;
+  margin-right: -8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
