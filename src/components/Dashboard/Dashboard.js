@@ -58,6 +58,13 @@ function Dashboard(props) {
     };
   });
 
+  const fixDecimals = (val, dec) => {
+    if (!val) return 0;
+    const decimals = String(val).split(".")[1];
+    if (decimals && decimals.length > dec) return Number(val.toFixed(dec));
+    return Number(val);
+  };
+
   const logoElement = <img src={connectLogo} alt='Connect Logo' />;
 
   return (
@@ -103,10 +110,7 @@ function Dashboard(props) {
             </span> */}
             {connected ? (
               <span className='header-wallet-balance'>
-                `${balance.toLocaleString("fullwide", {
-                  useGrouping: false,
-                  maxmimumFractionDigits: 4,
-                })}BNB`
+                ${fixDecimals(balance, 4)}BNB
               </span>
             )
             :

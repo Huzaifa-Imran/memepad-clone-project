@@ -6,8 +6,6 @@ import StackingCard from "../StackingCard/StackingCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loadStakingInfo,
-  stakeMepad,
-  withdrawAndCollectReward,
 } from "../../store/reducer/staking_reducer";
 import "./Staking.css";
 import { stakeIds } from "../../store/reducer/staking_reducer/stakingInitialStates";
@@ -15,7 +13,6 @@ import { stakeIds } from "../../store/reducer/staking_reducer/stakingInitialStat
 function Staking() {
   const [switchBtnToggle, setSwitchBtnToggle] = useState(true);
   const { connected } = useSelector((state) => state.web3);
-  const allStakes = useSelector((state) => state.staking);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -90,8 +87,6 @@ function Staking() {
               <Col lg={4} md={6}>
                 <StackingCard stakeId="mepad" />
               </Col>
-              <Col lg={4} md={6}></Col>
-              <Col lg={4} md={6}></Col>
             </Row>
           )}
 
@@ -99,28 +94,9 @@ function Staking() {
 
           {!switchBtnToggle && (
             <Row className="p-4">
-              {/* <Col lg={4} md={6}>
-                <StackingCard
-                  title="SafeDot Pool"
-                  subTitle="Stake MEPAD, Earn sDOT"
-                  banner="completed"
-                  connected={connected}
-                  disabled={true}
-                />
-              </Col> */}
               <Col lg={4} md={6}>
                 <StackingCard stakeId="elondoge" disabled={true} />
               </Col>
-              {/* <Col lg={4} md={6}>
-                <StackingCard
-                  title="MemePad Old Pool"
-                  subTitle="Old Staking Pool"
-                  banner="completed"
-                  image={img2}
-                  connected={connected}
-                  disabled={true}
-                />
-              </Col> */}
             </Row>
           )}
         </Container>

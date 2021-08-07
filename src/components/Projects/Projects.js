@@ -1,16 +1,6 @@
 import React, { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import rocketImg from "../../images/bg.5c8963a7.svg";
-// import Simlancer from "../../images/simlancer.jpg";
-// import SmallSimlancer from "../../images/smallSimlancer.jpg";
-// import Safedot from "../../images/safedot.png";
-// import SmallSafedot from "../../images/smallSafe.jpg";
-// import GetBooty from "../../images/getbooty.png";
-// import SmallGetBooty from "../../images/smallBooty.png";
-// import ElonDoge from "../../images/elon-doge.png";
-// import SmallElonDoge from "../../images/smallElon.png";
-// import eth from "../../images/bscAvatar.4144c399.png";
-// import ProgressBar from "react-bootstrap/ProgressBar";
 import "./Projects.css";
 import Cards from "../Cards/Cards";
 import { Link } from "react-router-dom";
@@ -37,21 +27,21 @@ function Projects(props) {
     };
   });
   const liveLaunches = [],
-    completedLaunches = [];
+    completedLaunches = [],
+    upcomingLaunches = [];
 
   projIds.forEach((val) => {
-    if (!allProjects[val].isFinished)
-      liveLaunches.push(
+    const launchCard = (
+      <Col lg={4} md={6}>
         <Link key={val} to={`/dashboard/projects/${val}`}>
           <Cards projDetails={allProjects[val]} />
         </Link>
-      );
-    else
-      completedLaunches.push(
-        <Link key={val} to={`/dashboard/projects/${val}`}>
-          <Cards projDetails={allProjects[val]} />
-        </Link>
-      );
+      </Col>
+    );
+    if (allProjects[val].isFinished) completedLaunches.push(launchCard);
+    else if (allProjects[val].startTime * 1000 < Date.now())
+      liveLaunches.push(launchCard);
+    else upcomingLaunches.push(launchCard);
   });
   for (let i = 0; i < projIds.length; ++i) {}
 
@@ -136,6 +126,7 @@ function Projects(props) {
           <Col lg={4} md={6}>
             <UpcomingCards />
           </Col>
+          {upcomingLaunches}
         </Row>
       </Container>
 
@@ -149,11 +140,7 @@ function Projects(props) {
         </Row>
       </Container>
       <Container fluid>
-        <Row className="p-4">
-          <Col lg={4} md={6}>
-            {liveLaunches}
-          </Col>
-        </Row>
+        <Row className="p-4">{liveLaunches}</Row>
       </Container>
 
       <Container fluid>
@@ -247,8 +234,8 @@ function Projects(props) {
             </Link>
           </Col> */}
 
+          {completedLaunches}
           <Col lg={4} md={6}>
-            {completedLaunches}
             <Link key={"elondoge"} to={`/dashboard/projects/elondoge`}>
               <Cards projDetails={allProjects["elondoge"]} />
             </Link>

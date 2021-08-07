@@ -6,7 +6,7 @@ import smallMepad from "../../images/staking-card-1.jpg";
 import * as RiIcons from "react-icons/ri";
 import * as FiIcons from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { IoIosRefresh } from "react-icons/io";
+import { IoIosRefresh, IoMdClose } from "react-icons/io";
 import { connectWallet, initWeb3 } from "../../store/reducer/web3_reducer";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
@@ -19,6 +19,7 @@ import {
   stakeMepad,
   withdrawAndCollectReward,
 } from "../../store/reducer/staking_reducer";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -36,11 +37,14 @@ const useStyles = makeStyles((theme) => ({
 
 function StackingCard(props) {
   const [previousReward, setPreviousReward] = useState(0);
-  const stakeDetails = useSelector((state) => state.staking[props.stakeId], (left, right) => {
-    if(left.pendingReward != right.pendingReward)
-      setPreviousReward(right.pendingReward);
-    return false;
-  });
+  const stakeDetails = useSelector(
+    (state) => state.staking[props.stakeId],
+    (left, right) => {
+      if (left.pendingReward != right.pendingReward)
+        setPreviousReward(right.pendingReward);
+      return false;
+    }
+  );
   const { connected } = useSelector((state) => state.web3);
   const { mepadTokens } = useSelector((state) => state.staking);
   const [showTotalStacked, setShowTotalStacked] = useState(false);
@@ -50,6 +54,7 @@ function StackingCard(props) {
   const [showCollectModal, setShowCollectModal] = useState(false);
   const [showStakingModal, setShowStakingModal] = useState(null);
   const [rangeValue, setRangeValue] = useState(0);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleChange = (event, newValue) => {
     setRangeValue(newValue);
@@ -61,6 +66,56 @@ function StackingCard(props) {
 
   const handleCloseStaking = () => {
     setShowStakingModal(null);
+  };
+  const snackbarAction = (key) => (
+    <React.Fragment>
+      <div
+        aria-label="close"
+        color="inherit"
+        onClick={() => closeSnackbar(key)}
+        className="notification-btn"
+      >
+        <IoMdClose />
+      </div>
+    </React.Fragment>
+  );
+
+  const showFinalSnackbar = (successMessage, errorMessage, payload) => {
+    if (payload["error"] == null) {
+      enqueueSnackbar(
+        <div className="MuiSnackbarContent-message">
+          <div className="MuiSnackbarContent-message-1"></div>
+          <div className="MuiSnackbarContent-message-2">
+            <div>Transaction Completed!</div>
+            <div>{successMessage}</div>
+          </div>
+        </div>,
+        { variant: "success", action: snackbarAction }
+      );
+    } else {
+      enqueueSnackbar(
+        <div className="MuiSnackbarContent-message">
+          <div className="MuiSnackbarContent-message-1"></div>
+          <div className="MuiSnackbarContent-message-2">
+            <div>Transaction Failed!</div>
+            <div>{errorMessage}</div>
+            <div></div>
+          </div>
+        </div>,
+        { variant: "error", action: snackbarAction }
+      );
+    }
+  };
+  const showPendingSnackbar = () => {
+    enqueueSnackbar(
+      <div className="MuiSnackbarContent-message">
+        <div className="MuiSnackbarContent-message-1"></div>
+        <div className="MuiSnackbarContent-message-2">
+          <div>Transaction Pending</div>
+        </div>
+      </div>,
+      { variant: "info", action: snackbarAction }
+    );
   };
 
   const fixDecimals = (val, dec) => {
@@ -161,7 +216,7 @@ function StackingCard(props) {
           </div>
         )}
 
-        {stakeDetails.enabled ? (
+        {!props.disabled && stakeDetails.enabled ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
               <div>{stakeDetails.symbol} Staked</div>
@@ -272,14 +327,20 @@ function StackingCard(props) {
                       </div>
                       <div className="collect-modal-content-div-2">
                         <button
-                          onClick={() => {
-                            dispatch(
+                          onClick={async () => {
+                            showPendingSnackbar();
+                            handleCloseCollect();
+                            const val = await dispatch(
                               withdrawAndCollectReward({
                                 amount: 0,
                                 id: props.stakeId,
                               })
                             );
-                            handleCloseCollect();
+                            showFinalSnackbar(
+                              "Reward harvested successfully!",
+                              "Failed to harvest reward",
+                              val
+                            );
                           }}
                         >
                           Confirm
@@ -346,16 +407,26 @@ function StackingCard(props) {
                       </div>
                       <div className="unstake-modal-content-div-2">
                         <div className="umc3">
-                          <input type="number" value={rangeValue} onChange={(e)=> setRangeValue(e.target.value)} />
+                          <input
+                            type="number"
+                            value={rangeValue}
+                            onChange={(e) => {
+                              let val = e.target.value;
+                                if (Number(val) > modalValues)
+                                  val = modalValues
+                                else if (Number(val) < 0) val = 0;
+                              setRangeValue(Number(val));
+                            }}
+                          />
                         </div>
                         <div className="umc4">~27670.00 USD</div>
                       </div>
                       <div className="unstake-modal-content-div-3">
-                        <div className="umc5">Balance: {modalValues}</div>
+                        <div className="umc5">Balance: {fixDecimals(modalValues, 3)}</div>
                       </div>
                       <div className="unstake-modal-content-div-4">
                         <div className="umc6">
-                          <div>{rangeValue}</div>
+                          <div>{fixDecimals(rangeValue, 3)}</div>
                           <Slider
                             value={rangeValue}
                             onChange={handleChange}
@@ -388,19 +459,25 @@ function StackingCard(props) {
                       <div className="unstake-modal-content-div-6">
                         <button
                           disabled={rangeValue === 0 ? true : false}
-                          onClick={() => {
-                            dispatch(
+                          onClick={async () => {
+                            showPendingSnackbar();
+                            handleCloseStaking();
+                            const val = await dispatch(
                               showStakingModal == "Stake"
-                                ? withdrawAndCollectReward({
+                                ? stakeMepad({
                                     amount: rangeValue,
                                     id: props.stakeId,
                                   })
-                                : stakeMepad({
+                                : withdrawAndCollectReward({
                                     amount: rangeValue,
                                     id: props.stakeId,
                                   })
                             );
-                            handleCloseStaking();
+                            showFinalSnackbar(
+                              `Tokens ${showStakingModal}d successfully`,
+                              `Failed to ${showStakingModal} tokens`,
+                              val
+                            );
                           }}
                         >
                           Confirm

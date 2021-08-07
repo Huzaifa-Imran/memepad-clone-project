@@ -2,7 +2,7 @@ import memepad from "./memepad.json";
 import smallElon from "../../../images/smallElon.png";
 import smallMepad from "../../../images/staking-card-1.jpg";
 
-export const stakeIds = ["mepad"];
+export const stakeIds = ["mepad", "elondoge"];
 
 export const stakingState = {
   mepadTokenContract: null,

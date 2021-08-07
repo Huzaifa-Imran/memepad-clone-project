@@ -66,19 +66,8 @@ function CardDetails(props) {
   const [copy, setCopy] = useState(false);
   const [showSwapInterface, setShowSwapInterface] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [pushNotification, setPushNotification] = useState({
-    vertical: "top",
-    horizontal: "right",
-  });
-  const [showNotification, setShowNotification] = useState(false);
   const [fromValue, setFromValue] = useState("0");
-  const [claimed, setClaimed] = useState(false);
 
-  const { vertical, horizontal } = pushNotification;
-
-  const handleClose = () => {
-    setShowNotification(false);
-  };
 
   const copyAddress = () => {
     navigator.clipboard.writeText(projectDetails.address);
@@ -681,7 +670,7 @@ function CardDetails(props) {
                             );
                           }}
                         >
-                          {claimed ? (
+                          {projectDetails.redeemed ? (
                             <div>
                               Claimed <br /> {projectDetails.symbol}
                             </div>
