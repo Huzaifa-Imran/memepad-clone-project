@@ -128,7 +128,6 @@ export const fetchBalance = createAsyncThunk(
     try {
       const { web3, address } = thunkAPI.getState().web3;
       const balance = await web3.eth.getBalance(address);
-
       return {
         balance: Number(Web3.utils.fromWei(balance)),
       };
@@ -146,6 +145,7 @@ const web3Slice = createSlice({
     address: null,
     shortAddress: null,
     balance: null,
+    blockNum: null,
     connected: false,
     accountUrl: "#",
   },

@@ -66,8 +66,7 @@ function CardDetails(props) {
   const [copy, setCopy] = useState(false);
   const [showSwapInterface, setShowSwapInterface] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [fromValue, setFromValue] = useState("0");
-
+  const [fromValue, setFromValue] = useState(0);
 
   const copyAddress = () => {
     navigator.clipboard.writeText(projectDetails.address);
@@ -173,7 +172,6 @@ function CardDetails(props) {
   const now =
     (projectDetails.soldAmount / projectDetails.totalRewardTokens) * 100;
   const progressInstance = <ProgressBar now={now} label={`${now}%`} srOnly />;
-
   return (
     <Container fluid>
       <Row>
@@ -431,7 +429,7 @@ function CardDetails(props) {
                         {projectDetails.symbol} <br /> Sold:
                       </p>
                       <p>
-                        {projectDetails.soldAmount} {projectDetails.symbol}
+                        {fixDecimals(projectDetails.soldAmount, 2)} {projectDetails.symbol}
                       </p>
                     </div>
                     <div className="info-row mt-3">
@@ -446,7 +444,16 @@ function CardDetails(props) {
                       <div>
                         <div className="info-row info-row-color mt-3">
                           <p>My Allocation</p>
-                          <p>{projectDetails.myAllocation} BNB</p>
+                          <p>
+                            {projectDetails.myAllocation.toLocaleString(
+                              "fullwide",
+                              {
+                                useGrouping: false,
+                                maximumFractionDigits: 18,
+                              }
+                            )}{" "}
+                            BNB
+                          </p>
                         </div>
                         <div className="info-row info-row-color mt-3">
                           <p>Max BNB Swap</p>
@@ -455,14 +462,21 @@ function CardDetails(props) {
                               projectDetails.maxSwap * projectDetails.tokenRate
                             ).toLocaleString("fullwide", {
                               useGrouping: false,
-                              maximumFractionDigits: 20,
+                              maximumFractionDigits: 18,
                             })}{" "}
                             BNB
                           </p>
                         </div>
-                        <button onClick={() => setShowSwapInterface(true)}>
-                          {`PURCHASE ${projectDetails.symbol.toUpperCase()}`}
-                        </button>
+                        {!projectDetails.isFinished && distance <= 0 && (
+                          <section className="swap-btn">
+                            <button
+                              disabled={projectDetails.maxSwap <= 0}
+                              onClick={() => setShowSwapInterface(true)}
+                            >
+                              {`PURCHASE ${projectDetails.symbol.toUpperCase()}`}
+                            </button>
+                          </section>
+                        )}
                       </div>
                     ) : (
                       <button onClick={() => dispatch(connectWallet())}>
@@ -485,7 +499,11 @@ function CardDetails(props) {
                       </div>
                       <div className="swap-interface-second-div">
                         <span>
-                          Max. Allocation is {projectDetails.maxSwap}{" "}
+                          Max. Allocation is{" "}
+                          {projectDetails.maxSwap.toLocaleString("fullwide", {
+                            useGrouping: false,
+                            maximumFractionDigits: 2,
+                          })}{" "}
                           {projectDetails.symbol}
                         </span>
                       </div>
@@ -501,21 +519,20 @@ function CardDetails(props) {
                           <div className="swap-from-num">
                             <input
                               type="number"
-                              value={fromValue}
+                              value={fromValue.toLocaleString("fullwide", {
+                                useGrouping: false,
+                                maximumFractionDigits: 20,
+                              })}
                               onChange={(e) => {
-                                let val = e.target.value;
+                                let val = Number(e.target.value);
                                 const max = Math.min(
-                                  projectDetails.maxSwap * projectDetails.tokenRate -
-                                    projectDetails.myAllocation,
+                                  projectDetails.maxSwap *
+                                    projectDetails.tokenRate,
                                   balance
                                 );
-                                if (Number(val) > max)
-                                  val = max.toLocaleString("fullwide", {
-                                    useGrouping: false,
-                                    maximumFractionDigits: 20,
-                                  });
-                                else if (Number(val) < 0) val = 0;
-                                setFromValue(String(val));
+                                if (val > max) val = max;
+                                else if (val < 0) val = 0;
+                                setFromValue(val);
                               }}
                             />
                           </div>
@@ -523,16 +540,11 @@ function CardDetails(props) {
                             <button
                               onClick={() => {
                                 const max = Math.min(
-                                  projectDetails.maxSwap * projectDetails.tokenRate -
-                                    projectDetails.myAllocation,
+                                  projectDetails.maxSwap *
+                                    projectDetails.tokenRate,
                                   balance
                                 );
-                                setFromValue(
-                                  max.toLocaleString("fullwide", {
-                                    useGrouping: false,
-                                    maximumFractionDigits: 20,
-                                  })
-                                );
+                                setFromValue(max);
                               }}
                             >
                               MAX
@@ -575,10 +587,10 @@ function CardDetails(props) {
                               type="number"
                               value={(
                                 (1 / projectDetails.tokenRate) *
-                                Number(fromValue)
+                                fromValue
                               ).toLocaleString("fullwide", {
                                 useGrouping: false,
-                                maximumFractionDigits: 3,
+                                maximumFractionDigits: 18,
                               })}
                               disabled
                             />
@@ -624,7 +636,10 @@ function CardDetails(props) {
                           dispatch(
                             swapTokens({
                               id: props.match.params.projId,
-                              amount: fromValue,
+                              amount: fromValue.toLocaleString("fullwide", {
+                                useGrouping: false,
+                                maximumFractionDigits: 18,
+                              }),
                             })
                           ).then((val) => {
                             setFromValue("0");
@@ -651,12 +666,24 @@ function CardDetails(props) {
                         src={projectDetails.smallImage}
                         alt={projectDetails.smallImage}
                       />
-                      <span>{projectDetails.myAllocation} BNB</span>
+                      <span>
+                        {projectDetails.myAllocation.toLocaleString(
+                          "fullwide",
+                          {
+                            useGrouping: false,
+                            maximumFractionDigits: 18,
+                          }
+                        )}{" "}
+                        BNB
+                      </span>
                     </div>
                     <div className="launch-icon-last-btn">
                       {
                         <button
-                          disabled={projectDetails.redeemed}
+                          disabled={
+                            projectDetails.redeemed ||
+                            !projectDetails.isFinished
+                          }
                           onClick={() => {
                             showPendingSnackbar();
                             dispatch(
@@ -689,39 +716,6 @@ function CardDetails(props) {
           </div>
         </Col>
       </Row>
-      {/* <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={showNotification}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        message={
-          <div className="MuiSnackbarContent-message">
-            <div className="MuiSnackbarContent-message-1">
-              <div className="MuiSnackbarContent-message-1-icon">
-                <TiTick />
-              </div>
-            </div>
-            <div className="MuiSnackbarContent-message-2">
-              <div>Swap Successed!</div>
-              <div>You swapped</div>
-              <div>{0.00907982111376496} successfully</div>
-            </div>
-          </div>
-        }
-        key={horizontal + vertical}
-        action={
-          <React.Fragment>
-            <div
-              aria-label="close"
-              color="inherit"
-              onClick={handleClose}
-              className="notification-btn"
-            >
-              <IoMdClose />
-            </div>
-          </React.Fragment>
-        }
-      /> */}
     </Container>
   );
 }

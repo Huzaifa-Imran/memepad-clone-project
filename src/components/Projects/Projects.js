@@ -43,7 +43,6 @@ function Projects(props) {
       liveLaunches.push(launchCard);
     else upcomingLaunches.push(launchCard);
   });
-  for (let i = 0; i < projIds.length; ++i) {}
 
   return (
     <div>

@@ -24,7 +24,7 @@ export const state = {
     totalSupply: 69000000000000,
     marketCap: 39150,
     tokenRate: 0.000000000026859,
-    startTime: 1630951200,
+    startTime: 1628780400,
     tokenUrl: memepad.prefix + memepad.booty.tokenAddress,
     address: memepad.booty.tokenAddress,
     name: "Booty Club",

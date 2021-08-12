@@ -4,9 +4,7 @@ import poolImg from "../../images/bg.9f4bcc65.png";
 import img1 from "../../images/smallSafe.jpg";
 import StackingCard from "../StackingCard/StackingCard";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loadStakingInfo,
-} from "../../store/reducer/staking_reducer";
+import { loadStakingInfo } from "../../store/reducer/staking_reducer";
 import "./Staking.css";
 import { stakeIds } from "../../store/reducer/staking_reducer/stakingInitialStates";
 
@@ -14,7 +12,7 @@ function Staking() {
   const [switchBtnToggle, setSwitchBtnToggle] = useState(true);
   const { connected } = useSelector((state) => state.web3);
   const dispatch = useDispatch();
-
+  const allStakes = useSelector((state) => state.staking);
   useEffect(() => {
     const interval = setInterval(() => {
       if (connected) {
@@ -26,6 +24,18 @@ function Staking() {
     return () => {
       clearInterval(interval);
     };
+  });
+  // Checks if opened tab matches the isCompleted value of stake.
+  // i.e if tab is "Live" and isCompleted is False OR
+  // if tab is "Completed" and isCompleted is True
+  const visibleCards = [];
+  stakeIds.forEach((val) => {
+    if (!allStakes[val].isCompleted == switchBtnToggle)
+      visibleCards.push(
+        <Col lg={4} md={6}>
+          <StackingCard stakeId={val} />
+        </Col>
+      );
   });
 
   return (
@@ -80,25 +90,9 @@ function Staking() {
           </Row>
         </Container>
         <Container fluid>
-          {/*Live */}
-
-          {switchBtnToggle && (
-            <Row className="p-4">
-              <Col lg={4} md={6}>
-                <StackingCard stakeId="mepad" />
-              </Col>
-            </Row>
-          )}
-
-          {/* Completed */}
-
-          {!switchBtnToggle && (
-            <Row className="p-4">
-              <Col lg={4} md={6}>
-                <StackingCard stakeId="elondoge" disabled={true} />
-              </Col>
-            </Row>
-          )}
+          <Row className="p-4">
+            {visibleCards}
+          </Row>
         </Container>
       </div>
     </div>

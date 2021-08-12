@@ -133,13 +133,11 @@ function StackingCard(props) {
   const modalValues =
     showStakingModal === "Stake" ? mepadTokens : stakeDetails.stakedAmount;
 
-  //   if(props.disabled)
-  //     setConnected(false);
 
   return (
     <div className="staking-card-main">
       <div className="staking-card">
-        {props.disabled && (
+        {stakeDetails.isCompleted && (
           <div class="sc-bQCEYZ irmCui">
             <div>Finished</div>
           </div>
@@ -165,7 +163,6 @@ function StackingCard(props) {
                 APR === 0 && "staking-text-2-last-child-non-valued"
               }`}
             >
-              {/* {!props.disabled && APR > 0 && `${APR}%`} */}
               <span className={`${APR === 0 && "d-none"}`}>
                 <CountUp duration={1} end={APR} />%
               </span>
@@ -216,7 +213,7 @@ function StackingCard(props) {
           </div>
         )}
 
-        {!props.disabled && stakeDetails.enabled ? (
+        {!stakeDetails.isCompleted && stakeDetails.enabled ? (
           <div className="staking-card-third-div">
             <div className="staking-text-3">
               <div>{stakeDetails.symbol} Staked</div>
@@ -257,7 +254,7 @@ function StackingCard(props) {
           <div className="staking-card-fourth-div">
             <div className="staking-btn">
               <button
-                disabled={props.disabled}
+                disabled={stakeDetails.isCompleted}
                 onClick={
                   connected
                     ? () => {
@@ -528,7 +525,7 @@ function StackingCard(props) {
                     "staking-text-4-last-child-non-valued"
                   }`}
                 >
-                  {!props.disabled && (
+                  {!stakeDetails.isCompleted && (
                     <>
                       {/* stakeDetails.totalStakingTokens > 0 &&
                     fixDecimals(stakeDetails.totalStakingTokens, 3) */}

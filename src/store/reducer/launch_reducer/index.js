@@ -129,7 +129,7 @@ export const loadLaunchInfo = createAsyncThunk(
   "LoadLaunchInfo",
   async (action, thunkAPI) => {
     try {
-      const { launchContract, decimals } = thunkAPI.getState().launch[action];
+      const { launchContract, decimals, tokenRateInBnb } = thunkAPI.getState().launch[action];
       const { address } = thunkAPI.getState().web3;
 
       const removeDecimals = (val) => {
@@ -140,16 +140,11 @@ export const loadLaunchInfo = createAsyncThunk(
         launchContract.methods.getWhitelist(address).call(),
         launchContract.methods.isFinished().call(),
       ]);
-
-      const soldAmountInBnb = removeDecimals(
-        await launchContract.methods
-          .getTokenInBNB(removeDecimals(responses[0]))
-          .call()
-      );
+      const soldAmountInBnb = removeDecimals(responses[0] * tokenRateInBnb);
       return {
         soldAmountInBnb,
         soldAmount: removeDecimals(responses[0]),
-        myAllocation: removeDecimals(responses[1]["_rewardedAmount"]),
+        myAllocation: Number(responses[1]["_amount"])/(10**18),
         maxSwap: removeDecimals(
           responses[1]["_maxPayableAmount"] - responses[1]["_rewardedAmount"]
         ),
@@ -180,6 +175,7 @@ const launchSlice = createSlice({
       state[projId].totalRewardTokens = action.payload.totalRewardTokens;
       state[projId].totalTokensInBnb = action.payload.totalTokensInBnb;
       state[projId].tokenRate = action.payload.tokenRateInBnb;
+      console.log("start: ", action.payload.startTime);
       state[projId].startTime = action.payload.startTime;
       state[projId].decimals = action.payload.decimals;
     },

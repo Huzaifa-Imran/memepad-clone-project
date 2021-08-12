@@ -67,6 +67,9 @@ export const initStakingInfo = createAsyncThunk(
       const rewardPerBlock = removeDecimals(
         await stakingContract.methods.rewardPerBlock().call()
       );
+      const bonusEndBlock = removeDecimals(
+        await stakingContract.methods.bonusEndBlock().call()
+      );
       return {
         rewardPerBlock,
         stakeId: action,
@@ -82,7 +85,7 @@ export const loadStakingInfo = createAsyncThunk(
   "LoadInfo",
   async (action, thunkAPI) => {
     try {
-      const { address } = thunkAPI.getState().web3;
+      const { web3, address } = thunkAPI.getState().web3;
       const { mepadTokenContract, decimals } = thunkAPI.getState().staking;
       const { stakingContract } = thunkAPI.getState().staking[action];
       const removeDecimals = (val) => {
@@ -96,6 +99,8 @@ export const loadStakingInfo = createAsyncThunk(
         mepadTokenContract.methods
           .allowance(address, memepad[action].stakingAddress)
           .call(),
+        stakingContract.methods.bonusEndBlock().call(),
+        web3.eth.getBlockNumber(),
       ]);
       return {
         pendingReward: removeDecimals(responses[2]),
@@ -103,6 +108,7 @@ export const loadStakingInfo = createAsyncThunk(
         mepadTokens: removeDecimals(responses[0]),
         stakedAmount: removeDecimals(responses[1].amount),
         enabled: Boolean(Number(responses[4]) > Number(responses[0])),
+        isCompleted: Number(responses[5]) < Number(responses[6]),
         stakeId: action,
       };
     } catch (error) {
@@ -204,24 +210,7 @@ const stakingSlice = createSlice({
       state.mepadTokens = action.payload.mepadTokens;
       state[stakeId].enabled = action.payload.enabled;
       state[stakeId].stakedAmount = action.payload.stakedAmount;
-    },
-    [stakeMepad.pending]: (state, action) => {
-      state.staking = true;
-    },
-    [stakeMepad.fulfilled]: (state, action) => {
-      state.staking = false;
-    },
-    [stakeMepad.rejected]: (state, action) => {
-      state.staking = false;
-    },
-    [withdrawAndCollectReward.pending]: (state, action) => {
-      state.unstaking = true;
-    },
-    [withdrawAndCollectReward.fulfilled]: (state, action) => {
-      state.unstaking = false;
-    },
-    [withdrawAndCollectReward.rejected]: (state, action) => {
-      state.unstaking = false;
+      state[stakeId].isCompleted = action.payload.isCompleted;
     },
   },
 });
