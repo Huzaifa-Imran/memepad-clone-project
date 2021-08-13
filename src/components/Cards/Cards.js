@@ -7,14 +7,13 @@ import '../Projects/Projects.css';
 
 function Cards(props) {
     const projDetails = props.projDetails;
-
-    const fixDecimals = (val, dec) => {
-        if (!val) return 0;
-        const decimals = String(val).split(".")[1];
-        if (decimals && decimals.length > dec)
-          return Number(val.toFixed(dec));
-        return val;
-      };
+    const fixDecimals = (val, dec = 0) => {
+    if (!val || val == Infinity) return 0;
+    return val.toLocaleString("fullwide", {
+      useGrouping: false,
+      maximumFractionDigits: dec,
+    });
+  };
 
       const now = ( projDetails.soldAmountInBnb / projDetails.totalTokensInBnb) * 100;
       const progressInstance = (

@@ -43,7 +43,6 @@ function Projects(props) {
       liveLaunches.push(launchCard);
     else upcomingLaunches.push(launchCard);
   });
-
   return (
     <div>
       <div className="project-banner-container">
@@ -234,11 +233,6 @@ function Projects(props) {
           </Col> */}
 
           {completedLaunches}
-          <Col lg={4} md={6}>
-            <Link key={"elondoge"} to={`/dashboard/projects/elondoge`}>
-              <Cards projDetails={allProjects["elondoge"]} />
-            </Link>
-          </Col>
         </Row>
       </Container>
     </div>

@@ -3,7 +3,7 @@ import memepad from "./memepad.json";
 import Web3 from "web3";
 import Safedot from "../../../images/safedot.png";
 import SmallSafedot from "../../../images/smallSafe.jpg";
-import { projIds, state } from "./projectInitialStates";
+import { projIds, projState } from "./projectInitialStates";
 
 export const initializeLaunches = createAsyncThunk(
   "InitializeLaunches",
@@ -161,7 +161,7 @@ export const loadLaunchInfo = createAsyncThunk(
 
 const launchSlice = createSlice({
   name: "launchReducer",
-  initialState: state,
+  initialState: projState,
   extraReducers: {
     [initLaunchContract.fulfilled]: (state, action) => {
       const projId = action.payload.projId;
