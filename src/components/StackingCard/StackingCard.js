@@ -271,7 +271,7 @@ function StackingCard(props) {
           </div>
         )}
 
-        {showCollectModal && (
+        {(
           <div className="collect-btn-modal">
             <Modal
               aria-labelledby="transition-modal-title"
@@ -356,7 +356,7 @@ function StackingCard(props) {
           </div>
         )}
 
-        {showStakingModal && (
+        {(
           <div className="unstake-btn-modal">
             <Modal
               aria-labelledby="transition-modal-title"
