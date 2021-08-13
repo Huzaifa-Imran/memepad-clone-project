@@ -162,11 +162,12 @@ function CardDetails(props) {
     );
   };
 
-  const fixDecimals = (val, dec) => {
-    if (!val) return 0;
-    const decimals = String(val).split(".")[1];
-    if (decimals && decimals.length > dec) return Number(val.toFixed(dec));
-    return Number(val);
+  const fixDecimals = (val, dec = 0) => {
+    if (!val || val == Infinity) return 0;
+    return val.toLocaleString("fullwide", {
+      useGrouping: false,
+      maximumFractionDigits: dec,
+    });
   };
 
   const now =
@@ -417,11 +418,7 @@ function CardDetails(props) {
                         {projectDetails.symbol} <br /> Price:
                       </p>
                       <p>
-                        {Number(projectDetails.tokenRate).toLocaleString(
-                          "fullwide",
-                          { useGrouping: false, maximumFractionDigits: 20 }
-                        )}{" "}
-                        <br /> BNB
+                        {fixDecimals(projectDetails.tokenRate, 20)} <br /> BNB
                       </p>
                     </div>
                     <div className="info-row mt-3">
@@ -429,7 +426,8 @@ function CardDetails(props) {
                         {projectDetails.symbol} <br /> Sold:
                       </p>
                       <p>
-                        {fixDecimals(projectDetails.soldAmount, 2)} {projectDetails.symbol}
+                        {fixDecimals(projectDetails.soldAmount, 2)}{" "}
+                        {projectDetails.symbol}
                       </p>
                     </div>
                     <div className="info-row mt-3">
@@ -445,25 +443,16 @@ function CardDetails(props) {
                         <div className="info-row info-row-color mt-3">
                           <p>My Allocation</p>
                           <p>
-                            {projectDetails.myAllocation.toLocaleString(
-                              "fullwide",
-                              {
-                                useGrouping: false,
-                                maximumFractionDigits: 18,
-                              }
-                            )}{" "}
-                            BNB
+                            {fixDecimals(projectDetails.myAllocation, 18)} BNB
                           </p>
                         </div>
                         <div className="info-row info-row-color mt-3">
                           <p>Max BNB Swap</p>
                           <p>
-                            {(
-                              projectDetails.maxSwap * projectDetails.tokenRate
-                            ).toLocaleString("fullwide", {
-                              useGrouping: false,
-                              maximumFractionDigits: 18,
-                            })}{" "}
+                            {fixDecimals(
+                              projectDetails.maxSwap * projectDetails.tokenRate,
+                              18
+                            )}{" "}
                             BNB
                           </p>
                         </div>
@@ -500,10 +489,7 @@ function CardDetails(props) {
                       <div className="swap-interface-second-div">
                         <span>
                           Max. Allocation is{" "}
-                          {projectDetails.maxSwap.toLocaleString("fullwide", {
-                            useGrouping: false,
-                            maximumFractionDigits: 2,
-                          })}{" "}
+                          {fixDecimals(projectDetails.maxSwap, 2)}{" "}
                           {projectDetails.symbol}
                         </span>
                       </div>
@@ -519,10 +505,7 @@ function CardDetails(props) {
                           <div className="swap-from-num">
                             <input
                               type="number"
-                              value={fromValue.toLocaleString("fullwide", {
-                                useGrouping: false,
-                                maximumFractionDigits: 20,
-                              })}
+                              value={fixDecimals(fromValue, 20)}
                               onChange={(e) => {
                                 let val = Number(e.target.value);
                                 const max = Math.min(
@@ -585,13 +568,10 @@ function CardDetails(props) {
                           <div className="swap-purchase-num-last">
                             <input
                               type="number"
-                              value={(
-                                (1 / projectDetails.tokenRate) *
-                                fromValue
-                              ).toLocaleString("fullwide", {
-                                useGrouping: false,
-                                maximumFractionDigits: 18,
-                              })}
+                              value={fixDecimals(
+                                (1 / projectDetails.tokenRate) * fromValue,
+                                18
+                              )}
                               disabled
                             />
                           </div>
@@ -616,14 +596,7 @@ function CardDetails(props) {
                     </section>
                     <div className="swap-interface-price">
                       <p className="">
-                        Price{" "}
-                        {(1 / projectDetails.tokenRate).toLocaleString(
-                          "fullwide",
-                          {
-                            useGrouping: false,
-                            maximumFractionDigits: 2,
-                          }
-                        )}{" "}
+                        Price {fixDecimals(1 / projectDetails.tokenRate, 2)}{" "}
                         {projectDetails.symbol} per BNB
                       </p>
                     </div>
@@ -636,10 +609,7 @@ function CardDetails(props) {
                           dispatch(
                             swapTokens({
                               id: props.match.params.projId,
-                              amount: fromValue.toLocaleString("fullwide", {
-                                useGrouping: false,
-                                maximumFractionDigits: 18,
-                              }),
+                              amount: fixDecimals(fromValue, 18),
                             })
                           ).then((val) => {
                             setFromValue("0");
@@ -667,14 +637,7 @@ function CardDetails(props) {
                         alt={projectDetails.smallImage}
                       />
                       <span>
-                        {projectDetails.myAllocation.toLocaleString(
-                          "fullwide",
-                          {
-                            useGrouping: false,
-                            maximumFractionDigits: 18,
-                          }
-                        )}{" "}
-                        BNB
+                        {fixDecimals(projectDetails.myAllocation, 18)} BNB
                       </span>
                     </div>
                     <div className="launch-icon-last-btn">
